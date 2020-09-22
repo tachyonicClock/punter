@@ -7,7 +7,7 @@ import nz.ac.waikato.assignmentseven.physics.Transform;
 public abstract class GameObject {
 
 //    transform the location of the GameObject in the world
-    public Transform transform;
+    public Transform transform = new Transform();
 
     /***
      * onUpdate is called on every draw event and is responsible for updating the entities state
@@ -24,12 +24,4 @@ public abstract class GameObject {
      * @param canvas the canvas the GameObject will be drawn to
      */
     public abstract void onDraw(Canvas canvas);
-
-    GameObject(){
-        transform = new Transform();
-    }
-
-    GameObject(Transform transform){
-        this.transform = transform;
-    }
 }
