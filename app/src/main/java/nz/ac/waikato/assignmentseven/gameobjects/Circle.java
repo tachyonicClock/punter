@@ -22,5 +22,4 @@ public class Circle extends GameObject {
         this.transform = transform;
         this.paint = paint;
     }
-
 }
