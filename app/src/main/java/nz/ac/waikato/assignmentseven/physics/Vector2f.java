@@ -16,6 +16,15 @@ public class Vector2f {
         return new Vector2f(x * s, y * s);
     }
 
+    public float dotProduct(Vector2f p2){
+        return x*p2.x + y*p2.y;
+    }
+
+    public Vector2f divide(float s){
+        return new Vector2f(x / s, y / s);
+    }
+
+
     public Vector2f add(Vector2f p2){
         return new Vector2f(x + p2.x, y + p2.y);
     }
@@ -40,12 +49,13 @@ public class Vector2f {
         return "Vector2{" +
                 "x=" + x +
                 ", y=" + y +
+                ", magnitude=" + magnitude() +
                 '}';
     }
 
     public Vector2f(Vector2f position) {
-        x = position.x;
-        y = position.y;
+        this.x = position.x;
+        this.y = position.y;
     }
 
     public Vector2f(float x, float y){

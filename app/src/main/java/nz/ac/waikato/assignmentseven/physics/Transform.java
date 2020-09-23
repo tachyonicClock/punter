@@ -5,10 +5,19 @@ public class Transform {
     public Vector2f scale = new Vector2f(1,1);
     public float rotation = 0f;
 
+    @Override
+    public String toString() {
+        return "Transform{" +
+                "translation=" + translation +
+                ", scale=" + scale +
+                ", rotation=" + rotation +
+                '}';
+    }
+
     public Transform(float xPos, float yPos, float scale){
         this.translation.x = xPos;
         this.translation.y = yPos;
-        this.scale.multiply(scale);
+        this.scale = this.scale.multiply(scale);
     }
 
     public Transform(Vector2f translation, float scale) {
@@ -17,6 +26,5 @@ public class Transform {
     }
 
     public Transform(){
-
     }
 }
