@@ -16,20 +16,19 @@ public class Input implements View.OnTouchListener {
     private Vector2f touchPosition = new Vector2f();
     private boolean isTouchDown = false;
 
-    public Vector2f getTouchVelocity(){
-        if (!isTouchDown) return new Vector2f();
+    public static Vector2f getTouchVelocity(){
+        if (!getInstance().isTouchDown) return new Vector2f();
 
-        velocityTracker.computeCurrentVelocity(1000);
-        return new Vector2f(velocityTracker.getXVelocity(), velocityTracker.getYVelocity());
-
+        getInstance().velocityTracker.computeCurrentVelocity(1000);
+        return new Vector2f(getInstance().velocityTracker.getXVelocity(), getInstance().velocityTracker.getYVelocity());
     }
 
-    public Vector2f getTouchPosition(){
-        return touchPosition;
+    public static Vector2f getTouchPosition(){
+        return getInstance().touchPosition;
     }
 
-    public boolean getTouchDown(){
-        return isTouchDown;
+    public static boolean getTouchDown(){
+        return getInstance().isTouchDown;
     }
 
     @Override

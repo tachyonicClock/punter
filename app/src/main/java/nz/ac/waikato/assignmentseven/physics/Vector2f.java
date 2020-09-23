@@ -16,8 +16,8 @@ public class Vector2f {
         return new Vector2f(x * s, y * s);
     }
 
-    public Vector2f dotProduct(Vector2f p2){
-        return new Vector2f(x * p2.x, y * p2.y);
+    public float dotProduct(Vector2f p2){
+        return x*p2.x + y*p2.y;
     }
 
     public Vector2f divide(float s){
@@ -54,8 +54,8 @@ public class Vector2f {
     }
 
     public Vector2f(Vector2f position) {
-        x = position.x;
-        y = position.y;
+        this.x = position.x;
+        this.y = position.y;
     }
 
     public Vector2f(float x, float y){

@@ -14,6 +14,10 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
     }
 
+    public void restartGame(View view){
+        ((Game)findViewById(R.id.game_view)).restartGame();
+    }
+
     @Override
     protected void onResume() {
         super.onResume();

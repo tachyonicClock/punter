@@ -7,7 +7,21 @@
     tools:context=".MainActivity">
 
     <nz.ac.waikato.assignmentseven.Game
+        android:id="@+id/game_view"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toTopOf="@+id/button"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"></nz.ac.waikato.assignmentseven.Game>
+
+    <Button
+        android:id="@+id/button"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
-    </nz.ac.waikato.assignmentseven.Game>
+        android:layout_height="wrap_content"
+        android:text="@string/restart_button"
+        app:layout_constraintBottom_toBottomOf="parent"
+        tools:layout_editor_absoluteX="16dp"
+        android:onClick="restartGame"/>
+
 </androidx.constraintlayout.widget.ConstraintLayout>

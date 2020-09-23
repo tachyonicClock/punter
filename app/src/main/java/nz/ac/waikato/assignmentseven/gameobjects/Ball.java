@@ -3,39 +3,60 @@ package nz.ac.waikato.assignmentseven.gameobjects;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
-import android.util.Log;
 
-import nz.ac.waikato.assignmentseven.GameObject;
 import nz.ac.waikato.assignmentseven.Input;
-import nz.ac.waikato.assignmentseven.PhysicsObject;
 import nz.ac.waikato.assignmentseven.physics.Transform;
 import nz.ac.waikato.assignmentseven.physics.Vector2f;
 
-public class Ball extends PhysicsObject {
-
-    Paint paint;
-
-    public Ball(Vector2f translation) {
-        super(100);
-        paint = new Paint();
-        paint.setColor(Color.GREEN);
-        transform.scale = transform.scale.multiply(50);
-        transform.translation = translation;
+public class Ball extends Circle {
+    enum State {
+        WAITING,
+        PICKED_UP,
+//        YOOT being the past tense of yeet meaning to throw...
+        YOOT
     }
+    State state = State.WAITING;
 
-    @Override
-    public void onUpdate(Canvas canvas, float deltaTime) {
-        if (Input.getInstance().getTouchDown()){
-            transform.translation = Input.getInstance().getTouchPosition();
-            velocity = Input.getInstance().getTouchVelocity();
-            paint.setColor(Color.RED);
-        }else{
-            paint.setColor(Color.GREEN);
+//    changeState changes the state and the balls colour
+    private void changeState(State state){
+        this.state = state;
+        switch (state){
+            case PICKED_UP:
+                paint.setColor(Color.GREEN);
+                break;
+            case WAITING:
+                paint.setColor(Color.BLUE);
+                break;
+            case YOOT:
+                paint.setColor(Color.RED);
         }
     }
 
+    public Ball(Vector2f translation) {
+        super(new Transform(translation, 50), 1, new Paint());
+        changeState(state);
+        mass = 1;
+    }
+
     @Override
-    public void onDraw(Canvas canvas) {
-        canvas.drawCircle(transform.translation.x, transform.translation.y, transform.scale.magnitude(), paint);
+//    Allows the user to pick the ball up and yeet it
+    public void onUpdate(Canvas canvas, float deltaTime) {
+        switch (state){
+            case WAITING:
+                if (Input.getTouchDown() &&
+                        Input.getTouchPosition().subtract(transform.translation).magnitude() < transform.scale.magnitude())
+                    changeState(State.PICKED_UP);
+                break;
+            case PICKED_UP:
+                if (!Input.getTouchDown()) {
+                    changeState(State.YOOT);
+                    break;
+                }
+                transform.translation = Input.getTouchPosition();
+                velocity = Input.getTouchVelocity();
+                break;
+            case YOOT:
+                break;
+        }
     }
 }
