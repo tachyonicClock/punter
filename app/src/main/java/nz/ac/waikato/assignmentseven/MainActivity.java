@@ -3,6 +3,8 @@ package nz.ac.waikato.assignmentseven;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 
@@ -12,18 +14,8 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        // This is required, as sharedPresences requires Context
-        ScoreHandler.SetupScoreHandler(this);
-
-        // To end the game, simply call EndCurrentGame with an optional final
-        // score addition. This call is required in order to persistently
-        // store the data and it will also start a new game
-        try {
-            ScoreHandler.GetInstance().EndCurrentGame(19);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        ScoreHandler scoreHandler = new ScoreHandler();
+        scoreHandler.SetContext(this);
     }
 
     public void restartGame(View view){
