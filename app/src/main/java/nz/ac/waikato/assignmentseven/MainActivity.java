@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 
 public class MainActivity extends AppCompatActivity {
@@ -16,6 +17,9 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         ScoreHandler sh = new ScoreHandler();
         sh.LoadClass(this);
+
+        sh.EndGame(7);
+        Log.d("game", "Ended game");
     }
 
     public void restartGame(View view){

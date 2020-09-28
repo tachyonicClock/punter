@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.util.Log;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
@@ -16,36 +17,61 @@ public class ScoreHandler extends Activity{
         return instance;
     }
 
-    private Score currentGame;
-    private TinyDB tinydb;
-    private ArrayList<Score> topScores;
+    private SharedPreferences sharedPref;
+    private Score currentGame = new Score();
+    TreeMap<Integer, String> sortedTopScores = new TreeMap<Integer, String>();
 
-    public Score GetCurrentScore() {
-        return currentGame;
-    }
+    public void LoadClass(Context ctx) {
+        /*
+        To be called during app execution to load our data in
+        from our persistent storage and initialize the class
+
+        Persistent storage format is username: score
+         */
+        sharedPref = ctx.getSharedPreferences("GAMEDATA", Context.MODE_PRIVATE);
 
     public Score EndCurrentGame() {
         return EndCurrentGame(0);
     }
 
-    /*
+    public Score EndCurrentGame(int finalScoreChange) {
+        /*
         Its game over, so trigger a cleanup. Figure out the score in relation to
         top scores and whether or not we have a new top 5 score
+         */
+        GetInstance().currentGame.ChangeScore(finalScoreChange);
+        Log.d("game", GetInstance().currentGame.toString());
 
-        @param finalScoreChange The final addition to the users score, if any.
-    */
-    public Score EndCurrentGame(int finalScoreChange) {
+        GetInstance().sortedTopScores.put(GetInstance().currentGame.GetScore(), GetInstance().currentGame.GetName());
+        SharedPreferences.Editor editor = sharedPref.edit();
 
-        currentGame.ChangeScore(finalScoreChange);
-        tinydb.clear();
+        if (GetInstance().sortedTopScores.size() >= 5) {
+            // Its bigger then 5, so we need to update our stored scores
+            List<String> data = new ArrayList<String>(GetInstance().sortedTopScores.values());
 
-        for (Score score : GetTopScores()){
-            StoreScore(score);
+            // figure out whats to be removed from storage
+            data.subList(0, 5).clear();
+            for (String i : data){
+                // remove from persistent storage
+                try {
+                    editor.remove(i);
+                }
+                catch (Exception e) {
+                    Log.e("game", e.toString());
+                }
+            }
+
         }
-        Score lastGame = GetCurrentScore();
-        currentGame = new Score();
-        topScores.add(currentGame);
-        return lastGame;
+        else {
+            // Just store the score in the persistent storage and we done
+            editor.putInt(GetInstance().currentGame.GetName(), GetInstance().currentGame.GetScore());
+        }
+        editor.apply();
+        Log.d("game", GetInstance().sortedTopScores.toString());
+
+        // persistent data should now be fine and sorted accordingly
+
+        return GetInstance().currentGame;
     }
 
     /*
