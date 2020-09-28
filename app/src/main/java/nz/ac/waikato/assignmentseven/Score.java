@@ -35,4 +35,9 @@ public class Score {
         name = newName;
         return GetName();
     }
+
+    @Override
+    public String toString(){
+        return GetName() + " : " + GetScore();
+    }
 }

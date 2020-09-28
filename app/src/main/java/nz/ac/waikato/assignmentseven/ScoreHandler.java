@@ -5,6 +5,7 @@ import android.content.Context;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 
 import nz.ac.waikato.assignmentseven.scoring.Score;
@@ -22,8 +23,7 @@ public class ScoreHandler extends Activity{
     private TinyDB tinydb;
     private boolean isInitialised = false;
 
-    public Score GetCurrentScore() throws Exception {
-        IsInitialised();
+    public Score GetCurrentScore() {
         return GetInstance().currentGame;
     }
 
@@ -55,8 +55,7 @@ public class ScoreHandler extends Activity{
 
         @param finalScoreChange The final addition to the users score, if any.
     */
-    public Score EndCurrentGame(int finalScoreChange) throws Exception {
-        IsInitialised();
+    public Score EndCurrentGame(int finalScoreChange){
 
         GetInstance().currentGame.ChangeScore(finalScoreChange);
         GetInstance().tinydb.clear();
