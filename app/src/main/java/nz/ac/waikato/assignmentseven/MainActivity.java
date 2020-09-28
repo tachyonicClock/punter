@@ -14,8 +14,8 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        ScoreHandler scoreHandler = new ScoreHandler();
-        scoreHandler.SetContext(this);
+        ScoreHandler sh = new ScoreHandler();
+        sh.LoadClass(this);
     }
 
     public void restartGame(View view){

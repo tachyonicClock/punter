@@ -2,28 +2,15 @@ package nz.ac.waikato.assignmentseven;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.SharedPreferences;
+import android.util.Log;
 
-import java.util.ArrayList;
-import java.util.Collections;
+import java.util.List;
 import java.util.Map;
-
-import nz.ac.waikato.assignmentseven.scoring.Score;
-import nz.ac.waikato.assignmentseven.scoring.TinyDB;
+import java.util.TreeMap;
 
 public class ScoreHandler extends Activity{
-    private static ScoreHandler instance = null;
-
-    /*
-    To be called during app execution to load our data in
-    from our persistent storage and initialize the class
-
-    Persistent storage format is {Int id: [Int score, String username]}
-
-    @param ctx The android context for usage with SharedPreferences
-     */
-    public static void SetupScoreHandler(Context ctx){
-        instance = new ScoreHandler(ctx);
-    }
+    private static ScoreHandler instance = new ScoreHandler();
     public static ScoreHandler GetInstance() {
         // Used to make this a singleton class
         return instance;
