@@ -15,11 +15,16 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        // This is required, as sharedPresences requires Context
         ScoreHandler sh = new ScoreHandler();
         sh.LoadClass(this);
 
-        sh.EndGame(6);
-        Log.d("game", "Ended game");
+        // To end the game, simply call EndGame with an optional final
+        // score addition. This call is required in order to persistantly
+        // store the data
+        //sh.EndGame(6);
+        //Log.d("game", "Ended game");
     }
 
     public void restartGame(View view){
