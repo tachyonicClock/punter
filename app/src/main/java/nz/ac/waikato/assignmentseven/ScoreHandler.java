@@ -22,6 +22,8 @@ public class ScoreHandler extends Activity{
     private Score currentGame = new Score();
     TreeMap<Integer, String> sortedTopScores = new TreeMap<Integer, String>();
 
+    public Score GetCurrentScore() { return GetInstance().currentGame; }
+
     public void LoadClass(Context ctx) {
         /*
         To be called during app execution to load our data in
@@ -42,11 +44,11 @@ public class ScoreHandler extends Activity{
         top scores and whether or not we have a new top 5 score
          */
         GetInstance().currentGame.ChangeScore(finalScoreChange);
-        Log.d("game", GetInstance().currentGame.toString());
+        //Log.d("game", GetInstance().currentGame.toString());
 
         GetInstance().sortedTopScores.put(GetInstance().currentGame.GetScore(), GetInstance().currentGame.GetName());
         ResolveCollisions();
-        Log.d("game", GetInstance().sortedTopScores.toString());
+        //Log.d("game", GetInstance().sortedTopScores.toString());
         editor.clear();
         int count = 0;
         for (Map.Entry<Integer, String> item : GetInstance().sortedTopScores.entrySet()){
@@ -60,13 +62,12 @@ public class ScoreHandler extends Activity{
         }
 
         editor.commit();
-        Log.d("game", GetInstance().sortedTopScores.toString());
 
         // persistent data should now be fine and sorted accordingly
-
+        Log.d("Game", "Persistently stored data:");
         Map<String, ?> allEntries = sharedPref.getAll();
         for (Map.Entry<String, ?> entry : allEntries.entrySet()) {
-            Log.d("map values", entry.getKey() + ": " + entry.getValue().toString());
+            Log.d("Game", entry.getKey() + ": " + entry.getValue().toString());
         }
 
         return GetInstance().currentGame;
