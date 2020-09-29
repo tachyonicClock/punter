@@ -18,7 +18,7 @@ public class MainActivity extends AppCompatActivity {
         ScoreHandler sh = new ScoreHandler();
         sh.LoadClass(this);
 
-        sh.EndGame(7);
+        sh.EndGame(26);
         Log.d("game", "Ended game");
     }
 
