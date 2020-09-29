@@ -18,6 +18,7 @@ public class ScoreHandler extends Activity{
     }
 
     private SharedPreferences sharedPref;
+    SharedPreferences.Editor editor;
     private Score currentGame = new Score();
     TreeMap<Integer, String> sortedTopScores = new TreeMap<Integer, String>();
 
@@ -29,6 +30,7 @@ public class ScoreHandler extends Activity{
         Persistent storage format is username: score
          */
         sharedPref = ctx.getSharedPreferences("GAMEDATA", Context.MODE_PRIVATE);
+        editor = sharedPref.edit();
 
     public Score EndCurrentGame() {
         return EndCurrentGame(0);
@@ -43,33 +45,29 @@ public class ScoreHandler extends Activity{
         Log.d("game", GetInstance().currentGame.toString());
 
         GetInstance().sortedTopScores.put(GetInstance().currentGame.GetScore(), GetInstance().currentGame.GetName());
-        SharedPreferences.Editor editor = sharedPref.edit();
-
-        if (GetInstance().sortedTopScores.size() >= 5) {
-            // Its bigger then 5, so we need to update our stored scores
-            List<String> data = new ArrayList<String>(GetInstance().sortedTopScores.values());
-
-            // figure out whats to be removed from storage
-            data.subList(0, 5).clear();
-            for (String i : data){
-                // remove from persistent storage
-                try {
-                    editor.remove(i);
-                }
-                catch (Exception e) {
-                    Log.e("game", e.toString());
-                }
+        ResolveCollisions();
+        Log.d("game", GetInstance().sortedTopScores.toString());
+        editor.clear();
+        int count = 0;
+        for (Map.Entry<Integer, String> item : GetInstance().sortedTopScores.entrySet()){
+            count++;
+            if (count == 6){
+                break;
             }
+            Integer score = item.getKey();
+            String name = item.getValue();
+            editor.putInt(name, score);
+        }
 
-        }
-        else {
-            // Just store the score in the persistent storage and we done
-            editor.putInt(GetInstance().currentGame.GetName(), GetInstance().currentGame.GetScore());
-        }
-        editor.apply();
+        editor.commit();
         Log.d("game", GetInstance().sortedTopScores.toString());
 
         // persistent data should now be fine and sorted accordingly
+
+        Map<String, ?> allEntries = sharedPref.getAll();
+        for (Map.Entry<String, ?> entry : allEntries.entrySet()) {
+            Log.d("map values", entry.getKey() + ": " + entry.getValue().toString());
+        }
 
         return GetInstance().currentGame;
     }
