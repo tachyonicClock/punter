@@ -27,8 +27,8 @@ public class Circle extends PhysicsObject {
     }
 
     public Circle(Transform transform, float mass, Paint paint){
-        this.transform = transform;
-        this.paint = paint;
+        this.transform = new Transform(transform);
+        this.paint = new Paint(paint);
         this.mass = mass;
     }
 }
