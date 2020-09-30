@@ -52,11 +52,15 @@ public class Ball extends Circle {
                     changeState(State.YOOT);
                     break;
                 }
-                transform.translation = Input.getTouchPosition();
-                velocity = Input.getTouchVelocity();
+                Vector2f distance = transform.translation.subtract(Input.getTouchPosition());
+                addForce(transform.translation.subtract(Input.getTouchPosition()).clamp(0, 1000).multiply(-1000*deltaTime));
+                velocity = velocity.multiply(0.1f * deltaTime);
                 break;
             case YOOT:
+                changeState(State.WAITING);
                 break;
         }
+        // Add a max velocity
+        velocity = velocity.clamp(0, 5000);
     }
 }

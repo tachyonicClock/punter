@@ -15,7 +15,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void restartGame(View view){
-        ((Game)findViewById(R.id.game_view)).restartGame();
+        ((GameView)findViewById(R.id.game_view)).restartGame();
     }
 
     @Override
