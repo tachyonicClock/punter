@@ -48,6 +48,10 @@ public class Collision {
         return null;
     }
 
+    public boolean contains(PhysicsObject obj){
+        return obj == objA || obj == objB;
+    }
+
 //    getPenetration returns how far the two shapes are overlapping
     public float getPenetration() {
         if (!isColliding) return 0;
@@ -216,7 +220,24 @@ public class Collision {
         updatePhysicsObjects();
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Collision collision = (Collision) o;
+        return collision.contains(objA) && collision.contains(objB);
+    }
+
+    @Override
+    public int hashCode() {
+//        The hashcode only cares about the physics objects in the collision, and does not care about
+//        order. Therefore an XOR is an appropriate way to combine them
+        return objA.hashCode() ^ objB.hashCode();
+    }
+
     public Collision(PhysicsObject objA, PhysicsObject objB){
+        if (objA.equals(objB)) throw new IllegalArgumentException("Expected objA and objB to be different");
         this.objA = objA;
         this.objB = objB;
     }
