@@ -5,17 +5,11 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.util.Log;
-import android.util.Pair;
 import android.view.View;
 import androidx.annotation.Nullable;
 import android.util.AttributeSet;
 
 import org.jetbrains.annotations.NotNull;
-
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Set;
 
 import nz.ac.waikato.assignmentseven.gameobjects.Ball;
 import nz.ac.waikato.assignmentseven.gameobjects.Circle;
@@ -27,8 +21,9 @@ import nz.ac.waikato.assignmentseven.physics.Vector2f;
 public class GameView extends View {
     Paint paint;
 
-//    gameObjects is a list of all gameObjects in the game that need to be drawn
-    private List<GameObject> gameObjects = new LinkedList<>();
+    private final static float MAX_TIME_STEP = 1/60f;
+
+    private GameWorld world = new GameWorld();
 
 //    We need to keep track of when the last draw was in order to accurately calculate physics
     private long previousDraw = System.currentTimeMillis();
@@ -39,43 +34,29 @@ public class GameView extends View {
         float deltaTime = (float) (System.currentTimeMillis() - previousDraw)/1000f;
         previousDraw = System.currentTimeMillis();
 
-//        Calculate Collisions
-//        Generate a set of all possible collisions
-        Set<Pair<PhysicsObject, PhysicsObject>> possibleCollisions = new HashSet<Pair<PhysicsObject, PhysicsObject>>();
-        for (GameObject gameObjectA : gameObjects) {
-            for (GameObject gameObjectB : gameObjects) {
-                if(gameObjectA != gameObjectB && gameObjectA instanceof PhysicsObject && gameObjectB instanceof PhysicsObject)
-                {
-                    Pair<PhysicsObject, PhysicsObject> pair = new Pair<>((PhysicsObject)gameObjectA, (PhysicsObject)gameObjectB);
-                    Pair<PhysicsObject, PhysicsObject> reversePair = new Pair<>(pair.second, pair.first);
-//                    Do not add a duplicate pair
-                    if (possibleCollisions.contains(pair))  continue;
-                    if (possibleCollisions.contains(reversePair))  continue;
-//                    Add it if it is not a duplicate
-                    possibleCollisions.add(pair);
-                }
-            }
-        }
+//        If we have not been updated in a little while, it is very possible we have been paused. To
+//        avoid very large time-steps that can break things we add a max time-step
+        if (deltaTime > MAX_TIME_STEP) deltaTime = MAX_TIME_STEP;
 
-        //        Physics Loop
-        for (GameObject gameObject : gameObjects) {
+//        Physics Loop
+        for (GameObject gameObject : world.getPhysicsObjectSet()) {
             if (gameObject instanceof PhysicsObject){
                 ((PhysicsObject) gameObject).onPhysicsUpdate(deltaTime);
             }
         }
+
 //        Perform collisions
-        for (Pair<PhysicsObject, PhysicsObject> pair : possibleCollisions){
-            Collision collision = new Collision(pair.first, pair.second);
+        for (Collision collision : world.getCollisions()){
             collision.updateCollision();
         }
 
 //        Update Loop
-        for (GameObject gameObject : gameObjects) {
+        for (GameObject gameObject : world.getGameObjects()) {
             gameObject.onUpdate(canvas, deltaTime);
         }
 
 //        Render Loop
-        for (GameObject gameObject : gameObjects) {
+        for (GameObject gameObject : world.getGameObjects()) {
             gameObject.onDraw(canvas);
         }
     }
@@ -102,27 +83,27 @@ public class GameView extends View {
         paint.setColor(Color.BLUE);
 
 //        Add walls to the environment
-        gameObjects.add(new Rect( canvas.getWidth()/2f, -100, canvas.getWidth(), 100, paint, 0));
-        gameObjects.add(new Rect( canvas.getWidth()/2f, canvas.getHeight()+100, canvas.getWidth(), 100, paint, 0));
-        gameObjects.add(new Rect( -100, canvas.getHeight()/2f, 100, canvas.getHeight(), paint, 0));
-        gameObjects.add(new Rect( canvas.getWidth()+100, canvas.getHeight()/2f, 100, canvas.getHeight(), paint, 0));
+        world.add(new Rect( canvas.getWidth()/2f, -100, canvas.getWidth(), 100, paint, 0));
+        world.add(new Rect( canvas.getWidth()/2f, canvas.getHeight()+100, canvas.getWidth(), 100, paint, 0));
+        world.add(new Rect( -100, canvas.getHeight()/2f, 100, canvas.getHeight(), paint, 0));
+        world.add(new Rect( canvas.getWidth()+100, canvas.getHeight()/2f, 100, canvas.getHeight(), paint, 0));
 
 //        Test rectangle
-        gameObjects.add(new Rect( canvas.getWidth()/2f, 800, 200, 100, paint, 0));
+        world.add(new Rect( canvas.getWidth()/2f, 800, 200, 100, paint, 0));
 
 //        Add throwable ball
         Vector2f pos = new Vector2f(canvas.getWidth(), canvas.getHeight()*2 - 300);
         pos = pos.multiply(0.5f);
-        gameObjects.add(new Ball(pos));
+        world.add(new Ball(pos));
 
 //        Test circle
        Transform transform = new Transform(canvas.getWidth()/2f, 500, 80);
-       gameObjects.add(new Circle(transform, 10, paint));
+        world.add(new Circle(transform, 10, paint));
     }
 
     public void restartGame() {
         Log.i("game", "GAME RESTARTED");
-        gameObjects = new LinkedList<>();
+        world = new GameWorld();
         needsSetup = true;
     }
 
