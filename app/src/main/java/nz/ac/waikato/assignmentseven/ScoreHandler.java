@@ -2,17 +2,14 @@ package nz.ac.waikato.assignmentseven;
 
 import android.app.Activity;
 import android.content.Context;
-import android.content.SharedPreferences;
-import android.util.Log;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
-import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
-import java.util.Set;
-import java.util.TreeMap;
 
+import nz.ac.waikato.assignmentseven.scoring.Score;
 import nz.ac.waikato.assignmentseven.storage.TinyDB;
 
 public class ScoreHandler extends Activity{
@@ -23,7 +20,7 @@ public class ScoreHandler extends Activity{
     }
 
     private Score currentGame;
-    TreeMap<Integer, Score> sortedTopScores;
+    private ArrayList<Score> topScores;
     private TinyDB tinydb;
     private boolean isInitialised = false;
 
@@ -41,7 +38,7 @@ public class ScoreHandler extends Activity{
          */
         System.out.println("Loading class");
 
-        GetInstance().sortedTopScores = new TreeMap<Integer, Score>(Collections.reverseOrder());
+        GetInstance().topScores = new ArrayList<Score>();
         GetInstance().tinydb =  new TinyDB(ctx);
 
 
@@ -59,6 +56,18 @@ public class ScoreHandler extends Activity{
         top scores and whether or not we have a new top 5 score
          */
         IsInitialised();
+
+        GetInstance().topScores.add(GetInstance().currentGame);
+
+        Collections.sort(GetInstance().topScores);
+
+        int counter = 0;
+        for (Score score : GetInstance().topScores){
+            if (counter == 5) break;
+            counter++;
+            StoreScore(score);
+            System.out.println(score);
+        }
 
         return GetInstance().currentGame;
     }
@@ -79,6 +88,8 @@ public class ScoreHandler extends Activity{
 
             topScores.add(s);
         }
+        System.out.println(GetInstance().topScores.toString());
+        System.out.println("Finished Tree");
     }
 
     public ArrayList<Score> GetTopScores() {
