@@ -23,7 +23,11 @@ public class MainActivity extends AppCompatActivity {
         // To end the game, simply call EndGame with an optional final
         // score addition. This call is required in order to persistantly
         // store the data
-        //sh.EndGame(6);
+        try {
+            sh.EndGame(6);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         //Log.d("game", "Ended game");
     }
 

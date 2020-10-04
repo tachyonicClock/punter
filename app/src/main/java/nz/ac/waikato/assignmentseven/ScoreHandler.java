@@ -3,7 +3,9 @@ package nz.ac.waikato.assignmentseven;
 import android.app.Activity;
 import android.content.Context;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -11,7 +13,6 @@ import java.util.Map;
 import nz.ac.waikato.assignmentseven.scoring.Score;
 import nz.ac.waikato.assignmentseven.scoring.TinyDB;
 
-import nz.ac.waikato.assignmentseven.storage.TinyDB;
 
 public class ScoreHandler extends Activity{
     private static ScoreHandler instance = new ScoreHandler();
@@ -87,6 +88,8 @@ public class ScoreHandler extends Activity{
 
             topScores.add(s);
         }
+        System.out.println(GetInstance().topScores.toString());
+        System.out.println("Finished Tree");
     }
 
     public ArrayList<Score> GetTopScores() {
