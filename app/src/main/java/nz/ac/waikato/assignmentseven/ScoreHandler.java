@@ -27,15 +27,15 @@ public class ScoreHandler extends Activity{
         return GetInstance().currentGame;
     }
 
+    /*
+    To be called during app execution to load our data in
+    from our persistent storage and initialize the class
+
+    Persistent storage format is {Int id: [Int score, String username]}
+
+    @param ctx The android context for usage with SharedPreferences
+     */
     public void LoadClass(Context ctx) {
-        /*
-        To be called during app execution to load our data in
-        from our persistent storage and initialize the class
-
-        Persistent storage format is {Int id: [Int score, String username]}
-         */
-        System.out.println("Loading class");
-
         GetInstance().topScores = new ArrayList<Score>();
         GetInstance().tinydb =  new TinyDB(ctx);
 
@@ -49,11 +49,13 @@ public class ScoreHandler extends Activity{
         return EndCurrentGame(0);
     }
 
-    public Score EndCurrentGame(int finalScoreChange) {
-        /*
+    /*
         Its game over, so trigger a cleanup. Figure out the score in relation to
         top scores and whether or not we have a new top 5 score
-         */
+
+        @param finalScoreChange The final addition to the users score, if any.
+    */
+    public Score EndCurrentGame(int finalScoreChange) throws Exception {
         IsInitialised();
 
         GetInstance().currentGame.ChangeScore(finalScoreChange);
@@ -65,7 +67,6 @@ public class ScoreHandler extends Activity{
         Score lastGame = GetCurrentScore();
         GetInstance().currentGame = new Score();
         GetInstance().topScores.add(GetInstance().currentGame);
-        System.out.println(lastGame);
         return lastGame;
     }
 
@@ -85,8 +86,6 @@ public class ScoreHandler extends Activity{
 
             topScores.add(s);
         }
-        System.out.println(GetInstance().topScores.toString());
-        System.out.println("Finished Tree");
     }
 
     public ArrayList<Score> GetTopScores() {

@@ -25,7 +25,6 @@ public class MainActivity extends AppCompatActivity {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        System.out.println(sh.GetTopScores());
     }
 
     public void restartGame(View view){
