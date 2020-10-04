@@ -6,9 +6,14 @@ import android.content.SharedPreferences;
 import android.util.Log;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.TreeMap;
+
+import nz.ac.waikato.assignmentseven.storage.TinyDB;
 
 public class ScoreHandler extends Activity{
     private static ScoreHandler instance = new ScoreHandler();
@@ -17,22 +22,32 @@ public class ScoreHandler extends Activity{
         return instance;
     }
 
-    private SharedPreferences sharedPref;
-    SharedPreferences.Editor editor;
-    private Score currentGame = new Score();
-    TreeMap<Integer, String> sortedTopScores = new TreeMap<Integer, String>();
+    private Score currentGame;
+    TreeMap<Integer, Score> sortedTopScores;
+    private TinyDB tinydb;
+    private boolean isInitialised = false;
 
-    public Score GetCurrentScore() { return GetInstance().currentGame; }
+    public Score GetCurrentScore() throws Exception {
+        IsInitialised();
+        return GetInstance().currentGame;
+    }
 
     public void LoadClass(Context ctx) {
         /*
         To be called during app execution to load our data in
         from our persistent storage and initialize the class
 
-        Persistent storage format is username: score
+        Persistent storage format is {Int id: [Int score, String username]}
          */
-        sharedPref = ctx.getSharedPreferences("GAMEDATA", Context.MODE_PRIVATE);
-        editor = sharedPref.edit();
+        System.out.println("Loading class");
+
+        GetInstance().sortedTopScores = new TreeMap<Integer, Score>(Collections.reverseOrder());
+        GetInstance().tinydb =  new TinyDB(ctx);
+
+
+        BuildTree();
+        GetInstance().currentGame = new Score();
+        GetInstance().isInitialised = true;
 
     public Score EndCurrentGame() {
         return EndCurrentGame(0);
@@ -43,32 +58,7 @@ public class ScoreHandler extends Activity{
         Its game over, so trigger a cleanup. Figure out the score in relation to
         top scores and whether or not we have a new top 5 score
          */
-        GetInstance().currentGame.ChangeScore(finalScoreChange);
-        //Log.d("game", GetInstance().currentGame.toString());
-
-        GetInstance().sortedTopScores.put(GetInstance().currentGame.GetScore(), GetInstance().currentGame.GetName());
-        ResolveCollisions();
-        //Log.d("game", GetInstance().sortedTopScores.toString());
-        editor.clear();
-        int count = 0;
-        for (Map.Entry<Integer, String> item : GetInstance().sortedTopScores.entrySet()){
-            count++;
-            if (count == 6){
-                break;
-            }
-            Integer score = item.getKey();
-            String name = item.getValue();
-            editor.putInt(name, score);
-        }
-
-        editor.commit();
-
-        // persistent data should now be fine and sorted accordingly
-        Log.d("Game", "Persistently stored data:");
-        Map<String, ?> allEntries = sharedPref.getAll();
-        for (Map.Entry<String, ?> entry : allEntries.entrySet()) {
-            Log.d("Game", entry.getKey() + ": " + entry.getValue().toString());
-        }
+        IsInitialised();
 
         return GetInstance().currentGame;
     }
