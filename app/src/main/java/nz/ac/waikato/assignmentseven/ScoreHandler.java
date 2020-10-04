@@ -20,8 +20,8 @@ public class ScoreHandler extends Activity{
     }
 
     private Score currentGame;
-    private ArrayList<Score> topScores;
     private TinyDB tinydb;
+    private ArrayList<Score> topScores;
     private boolean isInitialised = false;
 
     public Score GetCurrentScore() {
