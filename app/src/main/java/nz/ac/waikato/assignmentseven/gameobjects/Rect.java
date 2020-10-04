@@ -4,48 +4,31 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 
-import nz.ac.waikato.assignmentseven.PhysicsObject;
-import nz.ac.waikato.assignmentseven.physics.Collider;
 import nz.ac.waikato.assignmentseven.physics.Collision;
-import nz.ac.waikato.assignmentseven.physics.RectangleCollider;
+import nz.ac.waikato.assignmentseven.physics.PolygonCollider;
 import nz.ac.waikato.assignmentseven.physics.Transform;
 import nz.ac.waikato.assignmentseven.physics.Vector2f;
 
-public class Rect extends PhysicsObject {
-    private RectangleCollider collider;
-    private Paint paint;
-    private float n = 0;
-
-    @Override
-    public Collider getCollider() {
-        return collider;
-    }
+public class Rect extends Polygon {
 
     @Override
     public void onUpdate(Canvas canvas, float deltaTime) {
-        if (n < 0){
-            paint.setColor(Color.BLUE);
-        }else{
-            n -= deltaTime;
-        }
+        super.onUpdate(canvas, deltaTime);
     }
 
     @Override
     public void onCollision(Collision collision) {
         super.onCollision(collision);
-        paint.setColor(Color.RED);
-        n = 0.1f;
     }
 
-    @Override
-    public void onDraw(Canvas canvas) {
-        canvas.drawRect(collider.getLeft(), collider.getTop(), collider.getRight(), collider.getBottom(), paint);
+    public Rect(Transform transform, Paint paint, float mass)
+    {
+        super(transform, paint, mass, PolygonCollider.rectangleVertices(), PolygonCollider.rectangleNormals());
+        this.inertia = (transform.scale.x * transform.scale.x + transform.scale.y * transform.scale.y)/6f * mass;
     }
 
     public Rect(float x, float y, float width, float height, Paint paint, float mass){
-        this.paint = new Paint(paint);
-        this.transform = new Transform(new Vector2f(x, y), new Vector2f(width, height));
-        this.collider = new RectangleCollider(this);
-        this.mass = mass;
+        super(new Transform(new Vector2f(x, y), new Vector2f(width/2, height/2)), paint, mass, PolygonCollider.rectangleVertices(), PolygonCollider.rectangleNormals());
+        this.inertia = (width * width + height * height)/12f * mass;
     }
 }

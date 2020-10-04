@@ -33,7 +33,7 @@ public class Ball extends Circle {
     }
 
     public Ball(Vector2f translation) {
-        super(new Transform(translation, 50), 1, new Paint());
+        super(new Transform(translation, 35), 1, new Paint());
         changeState(state);
         mass = 1;
     }

@@ -6,7 +6,7 @@ public class Collider {
 
     protected PhysicsObject body;
 
-    public Vector2f getCenter(){
+    public Vector2f getOrigin(){
         return new Vector2f(body.transform.translation);
     }
 

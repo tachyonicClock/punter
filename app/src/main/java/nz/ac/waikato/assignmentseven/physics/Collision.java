@@ -1,5 +1,10 @@
 package nz.ac.waikato.assignmentseven.physics;
+
+import java.util.LinkedList;
+import java.util.List;
+
 import nz.ac.waikato.assignmentseven.PhysicsObject;
+import nz.ac.waikato.assignmentseven.gameobjects.Gizmos;
 
 /**
  * Collision detects when two physics objects collide with each other. And determines how the collision
@@ -10,12 +15,10 @@ import nz.ac.waikato.assignmentseven.PhysicsObject;
  * https://gamedevelopment.tutsplus.com/tutorials/how-to-create-a-custom-2d-physics-engine-the-basics-and-impulse-resolution--gamedev-6331
  */
 public class Collision {
-
 //    PERCENT is used for positional correction to avoid objects penetrating each other
-    private static float PERCENT = 0.05f;
+    private static float PERCENT = 0.1f;
 //    SLOP refers to how far objects should be able to penetrate before we adjust their positions
-    private static float SLOP = 0.01f;
-
+    private static float SLOP = 0.2f;
 
 //    The two objects that could be part of a collision
     private PhysicsObject objA;
@@ -25,12 +28,12 @@ public class Collision {
     private float penetration;
 //    Normal is the direction that the physics objects will be moved to resolve the collision
     private Vector2f normal = new Vector2f();
-//    Impulse is a force along the normal that will resolve the collision
-    private Vector2f impulse = new Vector2f();
 //    Are the physics objects colliding?
     private boolean isColliding = false;
 
-//    isCollision returns whether or not the objects are colliding
+    private List<Vector2f> contactPoints = new LinkedList<>();
+
+    //    isCollision returns whether or not the objects are colliding
     public boolean isCollision(){
         return isColliding;
     }
@@ -58,7 +61,6 @@ public class Collision {
         return penetration;
     }
 
-
     /**
      * getNormal returns the direction of the collision relative to the provided reference
      *
@@ -71,50 +73,34 @@ public class Collision {
         return normal;
     }
 
-    /**
-     * getImpulse returns the impulse of the resolution of the collision relative to the provided reference
-     *
-     * @param reference The origin of the impulse
-     * @return An impulse that will resolve the collision. Will be a zero vector if they are not colliding
-     */
-    public Vector2f getImpulse(PhysicsObject reference){
-        if (!isColliding) return new Vector2f();
-        if (reference == objB) return impulse.invert();
-        return impulse;
-    }
-
-    private static float clamp(float val, float min, float max){
-        return Math.max(min, Math.min(max, val));
-    }
-
 //    CircleVsCircle calculates collisions between circles
     private void CircleVsCircle(CircleCollider a, CircleCollider b){
 //        Total radius
         float r = a.getRadius() + b.getRadius();
 //        Distance between circle centers
-        float d = a.getCenter().subtract(b.getCenter()).magnitude();
+        float d = a.getOrigin().subtract(b.getOrigin()).magnitude();
 
 //        Check collision
         isColliding = d < r;
 
 //        Calculate collision parameters
         if (isCollision()){
-            normal = a.getCenter().subtract(b.getCenter()).normalized();
+            normal = a.getOrigin().subtract(b.getOrigin()).normalized();
             penetration = r - d;
         }
     }
 
 //    RectVsCircle calculates collision between a rect and a circle
     private void RectVsCircle(RectangleCollider a, CircleCollider b){
-        Vector2f aToB = a.getCenter().subtract(b.getCenter());
+        Vector2f aToB = a.getOrigin().subtract(b.getOrigin());
 
         float xExtent = a.getWidth()/2;
         float yExtent = a.getHeight()/2;
 
 //        Get closest point/edge
         Vector2f closest = new Vector2f(
-                clamp(aToB.x, -xExtent, xExtent),
-                clamp(aToB.y, -yExtent, yExtent));
+                ImpulseMath.clamp(aToB.x, -xExtent, xExtent),
+                ImpulseMath.clamp(aToB.y, -yExtent, yExtent));
 
         boolean inside = false;
 //        Circle is inside of the rect so we move the circle's center to the rect's edge
@@ -147,39 +133,196 @@ public class Collision {
         }
     }
 
+    private void PolyVsPoly(PolygonCollider a, PolygonCollider b){
+//        Are they colliding?
+        PolygonCollider.AxisOfLeastPenetration penetrationA = new PolygonCollider.AxisOfLeastPenetration(a, b);
+        if (penetrationA.distance > 0.0f) return;
+        PolygonCollider.AxisOfLeastPenetration penetrationB = new PolygonCollider.AxisOfLeastPenetration(b, a);
+        if (penetrationB.distance > 0.0f) return;
+
+//        Determine which shape contains reference face
+        boolean flip;
+        int referenceIndex = 0;
+        PolygonCollider refPoly; // Reference
+        PolygonCollider incPoly; // Incident
+        if (ImpulseMath.gt(penetrationA.distance, penetrationB.distance)){
+            refPoly = a;
+            incPoly = b;
+            referenceIndex = penetrationA.faceIndex;
+            flip = false;
+        }else{
+            refPoly = b;
+            incPoly = a;
+            referenceIndex = penetrationB.faceIndex;
+            flip = true;
+        }
+
+//        The incident face is the face that is being hit
+        Face incidentFace = PolygonCollider.findIncidentFace(refPoly, incPoly, referenceIndex);
+
+//        The reference face is the other face involved in the collision
+        Face referenceFace = new Face(refPoly.getWorldVertex(referenceIndex),
+                                      refPoly.getWorldVertex(referenceIndex + 1 == refPoly.size()? 0 : referenceIndex + 1 ) );
+        Vector2f sidePlaneNormal = referenceFace.b.subtract(referenceFace.a).normalized();
+        Vector2f refFaceNormal = new Vector2f( sidePlaneNormal.y, -sidePlaneNormal.x );
+
+        float refC = refFaceNormal.dotProduct(incidentFace.a);
+
+        normal = flip ? refFaceNormal : refFaceNormal.invert();
+
+        float separation = refFaceNormal.dotProduct(incidentFace.a) - refC;
+        if (separation <= 0.0f)
+        {
+            contactPoints.add(incidentFace.a);
+            penetration = -separation;
+        }
+
+        separation = refFaceNormal.dotProduct(incidentFace.b) - refC;
+        if (separation <= 0.0f)
+        {
+            contactPoints.add(incidentFace.b);
+            penetration += -separation;
+            penetration /= contactPoints.size();
+        }
+
+        isColliding = true;
+    }
+
+    private void CircleVsPoly(CircleCollider a, PolygonCollider b){
+
+//        Get transform objects. These are used to transform the basis
+        Transform invTF = b.body.transform.inverse();
+        Transform tf = b.body.transform;
+
+//        Get the circle center in the Polygon basis
+        Vector2f circleCenter = invTF.reverseApply(a.getOrigin());
+
+//        Get the face with the largest separation
+        float separation = Float.NEGATIVE_INFINITY;
+        int faceNormal = 0;
+        for (int i = 0; i < b.size(); i++){
+            float s = b.getNormal(i).dotProduct(circleCenter.subtract(b.getVertex(i)));
+            if (s > a.getRadius()) return;
+            if (s > separation)
+            {
+                separation = s;
+                faceNormal = i;
+            }
+        }
+
+//        Get the closest face's vertices. v1 and v2 describe the closest face
+        Vector2f v1 = b.getVertex(faceNormal);
+        int i2 = faceNormal + 1 < b.size() ? faceNormal + 1 : 0;
+        Vector2f v2 = b.getVertex(i2);
+
+//        Determine which voronoi region is relevant
+        float dot1 = circleCenter.subtract(v1).dotProduct(v2.subtract(v1));
+        float dot2 = circleCenter.subtract(v2).dotProduct(v1.subtract(v2));
+        penetration = a.getRadius() - separation;
+
+        // Hits vertex
+        if(dot1 <= 0.0f || dot2 <= 0.0f)
+        {
+//            Which vertex was hit?
+            Vector2f impactVertex = (dot1 <= 0.0f? v1 : v2);
+            Vector2f diff = circleCenter.subtract(impactVertex);
+            if(tf.apply(diff).subtract(b.getOrigin()).magnitude() > a.getRadius())
+                return;
+
+            normal = tf.applyRot(impactVertex.subtract(circleCenter).normalized().invert());
+            contactPoints.add(tf.apply(impactVertex));
+        }
+        // Hits face face
+        else
+        {
+            Vector2f n = b.getNormal(faceNormal);
+            Vector2f distanceAlongNormal = n.multiply(circleCenter.subtract(v1).dotProduct(n));
+            if( tf.apply(distanceAlongNormal).subtract(b.getOrigin()).magnitude() > a.getRadius())
+                return;
+
+            normal = tf.applyRot(n);
+            contactPoints.add(normal.invert().multiply(a.getRadius()).add(a.getOrigin()));
+        }
+        isColliding = true;
+    }
+
     private void RectVsRect(RectangleCollider a, RectangleCollider b){
-//        TODO Implement collision
+        Vector2f aToB = a.getOrigin().subtract(b.getOrigin());
+
+        float yOverlap = (a.getHeight() + b.getHeight())/2 - Math.abs(aToB.y);
+        float xOverlap = (a.getWidth() + b.getWidth())/2 - Math.abs(aToB.x);
+
+        if (yOverlap > 0 && xOverlap > 0){
+            if (xOverlap < yOverlap){
+//                Colliding on the x-axis
+                if (aToB.x < 0) normal = new Vector2f(-1,0);
+                else normal = new Vector2f(1,0);
+                penetration = xOverlap;
+            }else{
+//                Colliding on the y-axis
+                if(aToB.y < 0) normal = new Vector2f(0, -1);
+                else normal = new Vector2f(0, 1);
+                penetration = yOverlap;
+            }
+            isColliding = true;
+        }
     }
 
 //    Check a collision between any two types of collider
     private void checkCollision(Collider colA, Collider colB){
-        if (colA instanceof CircleCollider && colB instanceof CircleCollider){
+        if (colA instanceof CircleCollider && colB instanceof CircleCollider)
+        {
             CircleVsCircle((CircleCollider)colA, (CircleCollider)colB);
-        }else if (colA instanceof RectangleCollider && colB instanceof CircleCollider){
+        }
+        else if (colA instanceof RectangleCollider && colB instanceof CircleCollider)
+        {
             RectVsCircle((RectangleCollider)colA, (CircleCollider)colB);
-        }else if (colA instanceof RectangleCollider && colB instanceof RectangleCollider){
+        }
+        else if (colA instanceof RectangleCollider && colB instanceof RectangleCollider)
+        {
             RectVsRect((RectangleCollider)colA, (RectangleCollider)colB);
+        }
+        else if (colA instanceof CircleCollider && colB instanceof PolygonCollider)
+        {
+            CircleVsPoly((CircleCollider) colA, (PolygonCollider) colB);
+        }
+        else if (colA instanceof PolygonCollider && colB instanceof PolygonCollider)
+        {
+            PolyVsPoly((PolygonCollider) colA, (PolygonCollider) colB);
         }
     }
 
-    private void calculateImpulse() {
-//        Calculate relative velocity
-        Vector2f relV = objA.velocity.subtract(objB.velocity);
+    private void applyImpulse(Vector2f contact) {
+//        Calculate radius from COM to contact points
+        Vector2f ra = contact.subtract(objA.transform.translation);
+        Vector2f rb = contact.subtract(objB.transform.translation);
 
-//        Calculate relative velocity in terms of the normal
-        float velAlongNormal = relV.dotProduct(getNormal(objA));
+//        Relative velocity
+        Vector2f rv = objB.velocity.add(Vector2f.crossProduct(objB.angularVelocity, rb)).subtract(
+                      objA.velocity.add(Vector2f.crossProduct(objA.angularVelocity, ra)));
+//        Relative velocity along normal
+        float contactVel = rv.dotProduct(normal.invert());
 
-//        Do not do anything if they are already resolving the collision
-        if (velAlongNormal > 0)
-            return;
+//        Do not resolve if they are already separating
+        if (contactVel > 0) return;
 
-//        Calculate the collisions restitution
+//        Calculate inverse mass and inertia at the point
+        float raCrossN = ra.crossProduct(normal.invert());
+        float rbCrossN = rb.crossProduct(normal.invert());
+        float invMassSum = objA.inverseMass() + objB.inverseMass()
+                + raCrossN*raCrossN * objA.inverseInertia()
+                + rbCrossN*rbCrossN * objB.inverseInertia();
+
+//        Impulse scalar
         float e = Math.min(objA.restitution, objB.restitution);
-//        Calculate impulse scalar
-        float j = -(1+e) * velAlongNormal;
-        j /= objA.inverseMass() + objB.inverseMass();
+        float j = -(1.0f + e) * contactVel;
+        j /= invMassSum;
+        j /= contactPoints.size();
 
-        impulse = getNormal(objA).multiply(j);
+//        Apply impulse to objects
+        Vector2f impulse = normal.invert().multiply(j);
+        objA.applyImpulse(impulse.invert(), ra);
+        objB.applyImpulse(impulse, rb);
     }
 
 //    positionalCorrection moves objects so they do not sink into each other because of floating point
@@ -193,7 +336,9 @@ public class Collision {
 
 //    updatePhysicsObjects calls the onCollision callbacks
     public void updatePhysicsObjects(){
-        calculateImpulse();
+        for (Vector2f contact: contactPoints) {
+            applyImpulse(contact);
+        }
         positionalCorrection();
         objA.onCollision(this);
         objB.onCollision(this);
@@ -202,6 +347,8 @@ public class Collision {
 //    updateCollision is used to recalculate the collision
     public void updateCollision(){
         isColliding = false;
+        penetration = 0;
+        contactPoints.clear();
         Collider colA = objA.getCollider();
         Collider colB = objB.getCollider();
 
