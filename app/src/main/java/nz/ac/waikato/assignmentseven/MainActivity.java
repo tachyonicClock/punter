@@ -3,10 +3,7 @@ package nz.ac.waikato.assignmentseven;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.content.Context;
-import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 
 public class MainActivity extends AppCompatActivity {
@@ -20,15 +17,15 @@ public class MainActivity extends AppCompatActivity {
         ScoreHandler sh = new ScoreHandler();
         sh.LoadClass(this);
 
-        // To end the game, simply call EndGame with an optional final
-        // score addition. This call is required in order to persistantly
-        // store the data
+        // To end the game, simply call EndCurrentGame with an optional final
+        // score addition. This call is required in order to persistently
+        // store the data and it will also start a new game
         try {
-            sh.EndGame(6);
+            sh.EndCurrentGame(19);
         } catch (Exception e) {
             e.printStackTrace();
         }
-        //Log.d("game", "Ended game");
+        System.out.println(sh.GetTopScores());
     }
 
     public void restartGame(View view){

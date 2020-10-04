@@ -3,14 +3,12 @@ package nz.ac.waikato.assignmentseven;
 import android.app.Activity;
 import android.content.Context;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Map;
 
 import nz.ac.waikato.assignmentseven.scoring.Score;
-import nz.ac.waikato.assignmentseven.storage.TinyDB;
+import nz.ac.waikato.assignmentseven.scoring.TinyDB;
 
 public class ScoreHandler extends Activity{
     private static ScoreHandler instance = new ScoreHandler();
@@ -44,6 +42,7 @@ public class ScoreHandler extends Activity{
 
         BuildTree();
         GetInstance().currentGame = new Score();
+        GetInstance().topScores.add(GetInstance().currentGame);
         GetInstance().isInitialised = true;
 
     public Score EndCurrentGame() {
@@ -57,19 +56,17 @@ public class ScoreHandler extends Activity{
          */
         IsInitialised();
 
-        GetInstance().topScores.add(GetInstance().currentGame);
+        GetInstance().currentGame.ChangeScore(finalScoreChange);
+        GetInstance().tinydb.clear();
 
-        Collections.sort(GetInstance().topScores);
-
-        int counter = 0;
-        for (Score score : GetInstance().topScores){
-            if (counter == 5) break;
-            counter++;
+        for (Score score : GetInstance().GetTopScores()){
             StoreScore(score);
-            System.out.println(score);
         }
-
-        return GetInstance().currentGame;
+        Score lastGame = GetCurrentScore();
+        GetInstance().currentGame = new Score();
+        GetInstance().topScores.add(GetInstance().currentGame);
+        System.out.println(lastGame);
+        return lastGame;
     }
 
     /*
