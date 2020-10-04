@@ -86,8 +86,6 @@ public class ScoreHandler extends Activity{
 
             topScores.add(s);
         }
-        System.out.println(GetInstance().topScores.toString());
-        System.out.println("Finished Tree");
     }
 
     public ArrayList<Score> GetTopScores() {
