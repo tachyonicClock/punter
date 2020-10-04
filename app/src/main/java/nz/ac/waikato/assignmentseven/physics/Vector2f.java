@@ -10,6 +10,11 @@ public class Vector2f {
     public float x;
     public float y;
 
+    public Vector2f(double x, double y) {
+        this.x = (float) x;
+        this.y = (float) y;
+    }
+
     public Vector2f invert(){
         return new Vector2f(-x, -y);
     }
@@ -42,9 +47,26 @@ public class Vector2f {
         return new Vector2f(x/m, y/m);
     }
 
-    public Vector2f largestComponent(){
-        if (x*x > y*y) return new Vector2f(x, 0);
-        else return new Vector2f(0, y);
+    public void set(float x, float y){
+        this.x = x;
+        this.y = y;
+    }
+
+    public void setZero(){
+        x = 0;
+        y = 0;
+    }
+
+    public float crossProduct(Vector2f p2){
+        return x * p2.y - y * p2.x;
+    }
+
+    public Vector2f crossProduct(float s){
+        return new Vector2f( s * y, -s * x );
+    }
+
+    public static Vector2f crossProduct(float s, Vector2f a){
+        return new Vector2f( -s * a.y, s * a.x );
     }
 
     public Vector2f clamp(float min, float max){
@@ -63,6 +85,7 @@ public class Vector2f {
 
     public float magnitudeSquared(){return x*x + y*y; }
 
+    @NotNull
     @Override
     public String toString() {
         return "Vector2{" +
@@ -70,6 +93,24 @@ public class Vector2f {
                 ", y=" + y +
                 ", magnitude=" + magnitude() +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Vector2f vector2f = (Vector2f) o;
+
+        if (Float.compare(vector2f.x, x) != 0) return false;
+        return Float.compare(vector2f.y, y) == 0;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = (x != +0.0f ? Float.floatToIntBits(x) : 0);
+        result = 31 * result + (y != +0.0f ? Float.floatToIntBits(y) : 0);
+        return result;
     }
 
     public Vector2f(@NotNull Vector2f position) {

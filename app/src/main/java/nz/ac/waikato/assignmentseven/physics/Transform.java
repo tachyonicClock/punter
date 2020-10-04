@@ -4,8 +4,52 @@ import org.jetbrains.annotations.NotNull;
 
 public class Transform {
     public Vector2f translation = new Vector2f();
-    public Vector2f scale = new Vector2f(1,1);
-    public float rotation = 0f;
+    public Vector2f scale = new Vector2f(1.41421356237,1.41421356237);
+    private float degrees = 0f;
+    private float radians = 0f;
+
+    public float getRotationInDegrees() {
+        return degrees;
+    }
+
+    public float getRotationInRadians() {
+        return radians;
+    }
+
+    public void setRotationInDegrees(float degrees) {
+        this.degrees = degrees;
+        this.radians = (float) Math.toRadians(degrees);
+    }
+
+    public void setRotationInRadians(float radians){
+        this.radians = radians;
+        this.degrees = (float) Math.toDegrees(radians);
+    }
+
+    public Vector2f applyRot(@NotNull Vector2f pt){
+        float B = getRotationInRadians();
+        return new Vector2f(Math.cos(B)*pt.x - Math.sin(B)*pt.y, Math.sin(B)*pt.x + Math.cos(B)*pt.y);
+    }
+
+    public Vector2f applyTran(@NotNull Vector2f pt){
+        return pt.add(translation);
+    }
+
+    public Vector2f applyScale(@NotNull Vector2f pt){
+        return new Vector2f(scale.x * pt.x, scale.y * pt.y);
+    }
+
+    public Vector2f applyTranRot(Vector2f pt){
+        return applyRot(applyTran(pt));
+    }
+
+    public Vector2f apply(Vector2f pt){
+        return applyTran(applyRot(applyScale(pt)));
+    }
+    public Vector2f reverseApply(Vector2f pt){
+        return applyScale(applyRot(applyTran(pt)));
+    }
+
 
     @Override
     @NotNull
@@ -13,8 +57,39 @@ public class Transform {
         return "Transform{" +
                 "translation=" + translation +
                 ", scale=" + scale +
-                ", rotation=" + rotation +
-                '}';
+                ", rotation=" + getRotationInDegrees() +
+                "deg}";
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Transform transform = (Transform) o;
+
+        if (Float.compare(transform.degrees, degrees) != 0) return false;
+        if (Float.compare(transform.radians, radians) != 0) return false;
+        if (!translation.equals(transform.translation)) return false;
+        return scale.equals(transform.scale);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = translation.hashCode();
+        result = 31 * result + scale.hashCode();
+        result = 31 * result + (degrees != +0.0f ? Float.floatToIntBits(degrees) : 0);
+        result = 31 * result + (radians != +0.0f ? Float.floatToIntBits(radians) : 0);
+        return result;
+    }
+
+    public Transform inverse(){
+        Transform inverted = new Transform();
+        inverted.translation = translation.invert();
+        if (scale.x != 0) inverted.scale.x = 1/scale.x;
+        if (scale.y != 0) inverted.scale.y = 1/scale.y;
+        inverted.setRotationInRadians(-getRotationInRadians());
+        return inverted;
     }
 
     public Transform(float xPos, float yPos, float scale){
@@ -37,7 +112,7 @@ public class Transform {
     public Transform(@org.jetbrains.annotations.NotNull Transform transform) {
         translation = new Vector2f(transform.translation);
         scale = new Vector2f(transform.scale);
-        rotation = transform.rotation;
+        setRotationInDegrees(0);
     }
 
     public Transform(){

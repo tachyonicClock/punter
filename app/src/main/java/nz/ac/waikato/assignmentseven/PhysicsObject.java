@@ -14,11 +14,24 @@ public abstract class PhysicsObject extends GameObject {
 //    A measure of how bouncy the material is
     public float restitution = 1;
 
+
+//    omega is the rotational velocity. In radians/second
+    public float angularVelocity = 0;
+//    torque is the rotational force that will be applied
+    public float torque = 0;
+//    inertia is the rotational inertia of the object
+    public float inertia = 0;
+
     public abstract Collider getCollider();
 
     public float inverseMass(){
         if (mass == 0)  return 0;
         return 1 / mass;
+    }
+
+    public float inverseInertia(){
+        if (inertia == 0)  return 0;
+        return 1.0f/inertia;
     }
 
     public Vector2f getForce(){
@@ -29,19 +42,33 @@ public abstract class PhysicsObject extends GameObject {
         force = force.add(f);
     }
 
-    public void onCollision(Collision collision){
-        force = force.add(collision.getImpulse(this));
+    public void addTorque(float torque){
+        this.torque += torque;
     }
 
+    public void applyImpulse(Vector2f impulse, Vector2f point){
+        force = force.add(impulse);
+        torque += point.crossProduct(impulse);
+    }
 
+    public void onCollision(Collision collision){
+    }
 
     void onPhysicsUpdate(float deltaTime) {
-//        v = v + at where a = F/m
+        if (mass == 0) return;
+//        PERFORM INTEGRATION USING TIME-SLICES
+
+//        Integrate Forces
         velocity = velocity.add(force.multiply(inverseMass()));
-//        only apply the forces once
-        force = new Vector2f();
-//        s = s + vt
+        angularVelocity += torque * inverseInertia();
+
+//        Integrate Velocity
         transform.translation = transform.translation.add(velocity.multiply(deltaTime));
+        transform.setRotationInRadians(transform.getRotationInRadians() + angularVelocity * deltaTime);
+
+//        Clear forces
+        force.setZero();
+        torque = 0;
     }
 
     public PhysicsObject(){
@@ -50,4 +77,5 @@ public abstract class PhysicsObject extends GameObject {
     public PhysicsObject(float mass){
         this.mass = mass;
     }
+
 }

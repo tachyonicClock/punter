@@ -3,11 +3,6 @@ package nz.ac.waikato.assignmentseven.physics;
 import nz.ac.waikato.assignmentseven.PhysicsObject;
 
 public class RectangleCollider extends Collider {
-    private boolean inverted = false;
-
-    public boolean isInverted(){
-        return inverted;
-    }
 
     public float getLeft(){
         return body.transform.translation.x - body.transform.scale.x;
@@ -35,10 +30,5 @@ public class RectangleCollider extends Collider {
 
     public RectangleCollider(PhysicsObject body) {
         super(body);
-    }
-
-    public RectangleCollider(PhysicsObject body, boolean inverted){
-        super(body);
-        this.inverted = inverted;
     }
 }

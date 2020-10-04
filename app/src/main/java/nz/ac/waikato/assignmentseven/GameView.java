@@ -13,15 +13,18 @@ import org.jetbrains.annotations.NotNull;
 
 import nz.ac.waikato.assignmentseven.gameobjects.Ball;
 import nz.ac.waikato.assignmentseven.gameobjects.Circle;
+import nz.ac.waikato.assignmentseven.gameobjects.Gizmos;
+import nz.ac.waikato.assignmentseven.gameobjects.Polygon;
 import nz.ac.waikato.assignmentseven.gameobjects.Rect;
 import nz.ac.waikato.assignmentseven.physics.Collision;
+import nz.ac.waikato.assignmentseven.physics.PolygonCollider;
 import nz.ac.waikato.assignmentseven.physics.Transform;
 import nz.ac.waikato.assignmentseven.physics.Vector2f;
 
 public class GameView extends View {
     Paint paint;
 
-    private final static float MAX_TIME_STEP = 1/60f;
+    private final static float MAX_TIME_STEP = 1/30f;
 
     private GameWorld world = new GameWorld();
 
@@ -42,9 +45,8 @@ public class GameView extends View {
 
 //        Physics Loop
         for (GameObject gameObject : world.getPhysicsObjectSet()) {
-            if (gameObject instanceof PhysicsObject){
+            if (gameObject instanceof PhysicsObject)
                 ((PhysicsObject) gameObject).onPhysicsUpdate(deltaTime);
-            }
         }
 
 //        Perform collisions
@@ -83,24 +85,55 @@ public class GameView extends View {
 //        Level/Game Setup that needs access to a fully constructed class AND the canvas
         Paint paint = new Paint();
         paint.setColor(Color.BLUE);
+        paint.setStyle(Paint.Style.FILL);
 
 //        Add walls to the environment
-        world.add(new Rect( canvas.getWidth()/2f, -100, canvas.getWidth(), 100, paint, 0));
-        world.add(new Rect( canvas.getWidth()/2f, canvas.getHeight()+100, canvas.getWidth(), 100, paint, 0));
-        world.add(new Rect( -100, canvas.getHeight()/2f, 100, canvas.getHeight(), paint, 0));
-        world.add(new Rect( canvas.getWidth()+100, canvas.getHeight()/2f, 100, canvas.getHeight(), paint, 0));
+        float thickness = 500;
+        float width = canvas.getWidth();
+        float height = canvas.getHeight();
+        world.add(new Rect( width/2, -thickness/2f, width, thickness, paint, 0));
+        world.add(new Rect( width/2, height+thickness/2f, width, thickness, paint, 0));
+        world.add(new Rect( -thickness/2f, height/2, thickness, height-1, paint, 0));
+        world.add(new Rect( width+thickness/2f, height/2, thickness, height-1, paint, 0));
 
+
+
+//        Rect rect = new Rect( canvas.getWidth()/2f, 800, 400, 200, paint, 5);
+//        rect.transform.setRotationInDegrees(45);
 //        Test rectangle
-        world.add(new Rect( canvas.getWidth()/2f, 800, 200, 100, paint, 0));
+//        world.add(rect);
+
+        Transform transform = new Transform();
+        transform.scale.x = 200;
+        transform.scale.y = 100;
+        transform.setRotationInDegrees(45);
+        transform.translation.x = canvas.getWidth()/2f;
+        transform.translation.y = canvas.getHeight()/2f;
+        Rect poly = new Rect(transform, paint, 5);
+//        poly.omega = 0.5f;
+        world.add(poly);
+
+//
+        transform = new Transform();
+        transform.scale.x = 100;
+        transform.scale.y = 100;
+//        transform.setRotationInDegrees(10);
+        transform.translation.x = canvas.getWidth()/2f;
+        transform.translation.y = canvas.getHeight()/2f + 500;
+        poly = new Rect(transform, new Paint(paint), 5);
+//        poly.omega = -0.5f;
+        world.add(poly);
 
 //        Add throwable ball
         Vector2f pos = new Vector2f(canvas.getWidth(), canvas.getHeight()*2 - 300);
         pos = pos.multiply(0.5f);
         world.add(new Ball(pos));
 
+        world.add(Gizmos.getInstance());
+
 //        Test circle
-       Transform transform = new Transform(canvas.getWidth()/2f, 500, 80);
-        world.add(new Circle(transform, 10, paint));
+//       Transform transform = new Transform(canvas.getWidth()/2f, 500, 80);
+//        world.add(new Circle(transform, 10, paint));
     }
 
     public void restartGame() {
@@ -112,7 +145,6 @@ public class GameView extends View {
     private void init(){
         paint = new Paint();
         paint.setColor(getResources().getColor(R.color.colorAccent, getContext().getTheme()));
-
         setOnTouchListener(Input.getInstance());
     }
 
