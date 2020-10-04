@@ -11,6 +11,8 @@ import java.util.Map;
 import nz.ac.waikato.assignmentseven.scoring.Score;
 import nz.ac.waikato.assignmentseven.scoring.TinyDB;
 
+import nz.ac.waikato.assignmentseven.storage.TinyDB;
+
 public class ScoreHandler extends Activity{
     private static ScoreHandler instance = new ScoreHandler();
     public static ScoreHandler GetInstance() {
