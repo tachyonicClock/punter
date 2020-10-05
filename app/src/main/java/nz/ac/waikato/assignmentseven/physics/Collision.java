@@ -16,7 +16,7 @@ import nz.ac.waikato.assignmentseven.gameobjects.Gizmos;
  */
 public class Collision {
 //    PERCENT is used for positional correction to avoid objects penetrating each other
-    private static float PERCENT = 0.1f;
+    private static float PERCENT = 0.05f;
 //    SLOP refers to how far objects should be able to penetrate before we adjust their positions
     private static float SLOP = 0.2f;
 
@@ -86,49 +86,6 @@ public class Collision {
 //        Calculate collision parameters
         if (isCollision()){
             normal = a.getOrigin().subtract(b.getOrigin()).normalized();
-            penetration = r - d;
-        }
-    }
-
-//    RectVsCircle calculates collision between a rect and a circle
-    private void RectVsCircle(RectangleCollider a, CircleCollider b){
-        Vector2f aToB = a.getOrigin().subtract(b.getOrigin());
-
-        float xExtent = a.getWidth()/2;
-        float yExtent = a.getHeight()/2;
-
-//        Get closest point/edge
-        Vector2f closest = new Vector2f(
-                ImpulseMath.clamp(aToB.x, -xExtent, xExtent),
-                ImpulseMath.clamp(aToB.y, -yExtent, yExtent));
-
-        boolean inside = false;
-//        Circle is inside of the rect so we move the circle's center to the rect's edge
-        if (closest.equal(aToB)){
-            inside = true;
-//            closest axis
-            if(Math.abs(aToB.x) > Math.abs(aToB.y)){
-                closest.x = Math.abs(xExtent) + SLOP;
-            }else {
-                closest.y = Math.abs(yExtent) + SLOP;
-            }
-        }
-
-        normal = aToB.subtract(closest);
-        float d = normal.magnitudeSquared();
-        float r = b.getRadius();
-
-//        Check collision
-        isColliding = !(d > r * r && !inside);
-        if (!isCollision()) return;
-
-//        This is a bit of a performance hack holding off sqrt until needed
-        d = (float) Math.sqrt(d);
-        if (inside){
-            normal = normal.normalized().invert();
-            penetration = d;
-        }else {
-            normal = normal.normalized();
             penetration = r - d;
         }
     }
@@ -246,41 +203,11 @@ public class Collision {
         isColliding = true;
     }
 
-    private void RectVsRect(RectangleCollider a, RectangleCollider b){
-        Vector2f aToB = a.getOrigin().subtract(b.getOrigin());
-
-        float yOverlap = (a.getHeight() + b.getHeight())/2 - Math.abs(aToB.y);
-        float xOverlap = (a.getWidth() + b.getWidth())/2 - Math.abs(aToB.x);
-
-        if (yOverlap > 0 && xOverlap > 0){
-            if (xOverlap < yOverlap){
-//                Colliding on the x-axis
-                if (aToB.x < 0) normal = new Vector2f(-1,0);
-                else normal = new Vector2f(1,0);
-                penetration = xOverlap;
-            }else{
-//                Colliding on the y-axis
-                if(aToB.y < 0) normal = new Vector2f(0, -1);
-                else normal = new Vector2f(0, 1);
-                penetration = yOverlap;
-            }
-            isColliding = true;
-        }
-    }
-
 //    Check a collision between any two types of collider
     private void checkCollision(Collider colA, Collider colB){
         if (colA instanceof CircleCollider && colB instanceof CircleCollider)
         {
             CircleVsCircle((CircleCollider)colA, (CircleCollider)colB);
-        }
-        else if (colA instanceof RectangleCollider && colB instanceof CircleCollider)
-        {
-            RectVsCircle((RectangleCollider)colA, (CircleCollider)colB);
-        }
-        else if (colA instanceof RectangleCollider && colB instanceof RectangleCollider)
-        {
-            RectVsRect((RectangleCollider)colA, (RectangleCollider)colB);
         }
         else if (colA instanceof CircleCollider && colB instanceof PolygonCollider)
         {

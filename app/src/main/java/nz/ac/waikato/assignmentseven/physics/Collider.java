@@ -3,7 +3,6 @@ package nz.ac.waikato.assignmentseven.physics;
 import nz.ac.waikato.assignmentseven.PhysicsObject;
 
 public class Collider {
-
     protected PhysicsObject body;
 
     public Vector2f getOrigin(){

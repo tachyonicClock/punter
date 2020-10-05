@@ -13,12 +13,12 @@ public class Circle extends PhysicsObject {
     private Collider collider = new CircleCollider(this);
 
     @Override
-    public void onUpdate(Canvas canvas, float deltaTime) {
+    public Collider getCollider() {
+        return collider;
     }
 
     @Override
-    public Collider getCollider() {
-        return collider;
+    public void onUpdate(Canvas canvas, float deltaTime) {
     }
 
     @Override

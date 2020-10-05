@@ -1,7 +1,6 @@
 package nz.ac.waikato.assignmentseven.gameobjects;
 
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.Paint;
 
 import nz.ac.waikato.assignmentseven.physics.Collision;
@@ -10,16 +9,6 @@ import nz.ac.waikato.assignmentseven.physics.Transform;
 import nz.ac.waikato.assignmentseven.physics.Vector2f;
 
 public class Rect extends Polygon {
-
-    @Override
-    public void onUpdate(Canvas canvas, float deltaTime) {
-        super.onUpdate(canvas, deltaTime);
-    }
-
-    @Override
-    public void onCollision(Collision collision) {
-        super.onCollision(collision);
-    }
 
     public Rect(Transform transform, Paint paint, float mass)
     {

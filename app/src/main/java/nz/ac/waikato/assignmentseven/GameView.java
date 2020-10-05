@@ -110,18 +110,15 @@ public class GameView extends View {
         transform.translation.x = canvas.getWidth()/2f;
         transform.translation.y = canvas.getHeight()/2f;
         Rect poly = new Rect(transform, paint, 5);
-//        poly.omega = 0.5f;
         world.add(poly);
 
 //
         transform = new Transform();
         transform.scale.x = 100;
         transform.scale.y = 100;
-//        transform.setRotationInDegrees(10);
         transform.translation.x = canvas.getWidth()/2f;
         transform.translation.y = canvas.getHeight()/2f + 500;
         poly = new Rect(transform, new Paint(paint), 5);
-//        poly.omega = -0.5f;
         world.add(poly);
 
 //        Add throwable ball
@@ -130,10 +127,6 @@ public class GameView extends View {
         world.add(new Ball(pos));
 
         world.add(Gizmos.getInstance());
-
-//        Test circle
-//       Transform transform = new Transform(canvas.getWidth()/2f, 500, 80);
-//        world.add(new Circle(transform, 10, paint));
     }
 
     public void restartGame() {
