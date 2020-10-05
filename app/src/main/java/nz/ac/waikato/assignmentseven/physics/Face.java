@@ -8,8 +8,4 @@ public class Face {
         this.a = a;
         this.b = b;
     }
-    public Face(Face face){
-        a = face.a;
-        b = face.b;
-    }
 }

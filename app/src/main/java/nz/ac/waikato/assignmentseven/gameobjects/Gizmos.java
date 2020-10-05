@@ -14,14 +14,14 @@ import nz.ac.waikato.assignmentseven.physics.Vector2f;
  *  Gizmos are used to aid with visual debugging, by offering a singleton interface
  */
 public class Gizmos extends GameObject {
-
+    private static Gizmos instance = null;
     private Paint paint = new Paint();
+//    Queues of debug objects to draw
     private Queue<DrawablePoint> points = new LinkedList<>();
     private Queue<DrawableLine> lines = new LinkedList<>();
 
-    private static Gizmos instance = null;
-
-    private class DrawablePoint{
+//    DrawablePoint used to draw a point
+    private static class DrawablePoint{
         Vector2f position;
         float radius;
         int colour;
@@ -31,7 +31,8 @@ public class Gizmos extends GameObject {
             this.colour = colour;
         }
     }
-    private class DrawableLine{
+//    DrawableLine used to draw a line
+    private static class DrawableLine{
         Vector2f a;
         Vector2f b;
         float thickness;

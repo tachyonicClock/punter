@@ -26,29 +26,19 @@ public class Transform {
         this.degrees = (float) Math.toDegrees(radians);
     }
 
+//    Rotate the point about 0,0
     public Vector2f applyRot(@NotNull Vector2f pt){
         float B = getRotationInRadians();
         return new Vector2f(Math.cos(B)*pt.x - Math.sin(B)*pt.y, Math.sin(B)*pt.x + Math.cos(B)*pt.y);
     }
-
-    public Vector2f applyTran(@NotNull Vector2f pt){
-        return pt.add(translation);
-    }
-
-    public Vector2f applyScale(@NotNull Vector2f pt){
-        return new Vector2f(scale.x * pt.x, scale.y * pt.y);
-    }
-
-    public Vector2f applyTranRot(Vector2f pt){
-        return applyRot(applyTran(pt));
-    }
-
-    public Vector2f apply(Vector2f pt){
-        return applyTran(applyRot(applyScale(pt)));
-    }
-    public Vector2f reverseApply(Vector2f pt){
-        return applyScale(applyRot(applyTran(pt)));
-    }
+//    Translate the point
+    public Vector2f applyTran(@NotNull Vector2f pt){  return pt.add(translation);}
+//    Scale the point
+    public Vector2f applyScale(@NotNull Vector2f pt){ return new Vector2f(scale.x * pt.x, scale.y * pt.y);}
+//    Apply multiple transforms in specific orders
+    public Vector2f applyTranRot(@NotNull Vector2f pt){  return applyRot(applyTran(pt));}
+    public Vector2f apply(@NotNull Vector2f pt){         return applyTran(applyRot(applyScale(pt)));}
+    public Vector2f reverseApply(@NotNull Vector2f pt){  return applyScale(applyRot(applyTran(pt)));}
 
 
     @Override
@@ -83,6 +73,7 @@ public class Transform {
         return result;
     }
 
+//    Inverse returns a transform object that can undo this objects transformations
     public Transform inverse(){
         Transform inverted = new Transform();
         inverted.translation = translation.invert();
@@ -109,7 +100,7 @@ public class Transform {
     }
 
 //    Transform copy constructor
-    public Transform(@org.jetbrains.annotations.NotNull Transform transform) {
+    public Transform(@NotNull Transform transform) {
         translation = new Vector2f(transform.translation);
         scale = new Vector2f(transform.scale);
         setRotationInDegrees(0);

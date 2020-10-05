@@ -102,25 +102,15 @@ public class PolygonCollider extends Collider {
         return normals;
     }
 
-    public Vector2f getWorldVertex(int i){
-        return body.transform.apply(vertices.get(i));
-    }
-
-    public Vector2f getWorldNormal(int i){
-        return body.transform.applyRot(normals.get(i));
-    }
-    public Vector2f getVertex(int i){
-        return vertices.get(i);
-    }
-    public List<Vector2f> getVertices() {
-        return vertices;
-    }
-    public Vector2f getNormal(int i){
-        return normals.get(i);
-    }
-    public List<Vector2f> getNormals() {
-        return normals;
-    }
+//    get transformed points by index
+    public Vector2f getWorldVertex(int i){ return body.transform.apply(vertices.get(i));}
+    public Vector2f getWorldNormal(int i){ return body.transform.applyRot(normals.get(i));}
+//    get points in object space
+    public Vector2f getVertex(int i){      return vertices.get(i);}
+    public Vector2f getNormal(int i){      return normals.get(i);}
+//    get list of untransformed points
+    public List<Vector2f> getVertices() {  return vertices;}
+    public List<Vector2f> getNormals() {   return normals;}
 
     public int size(){
         return vertices.size();
