@@ -1,5 +1,7 @@
 package nz.ac.waikato.assignmentseven;
 
+import android.content.Context;
+import android.content.res.Resources;
 import android.graphics.Canvas;
 
 import nz.ac.waikato.assignmentseven.physics.Transform;
@@ -24,4 +26,12 @@ public abstract class GameObject {
      * @param canvas the canvas the GameObject will be drawn to
      */
     public abstract void onDraw(Canvas canvas);
+
+    /**
+     * onStart is called when the game is first started. It is supplied the android context
+     * so that it can access resources for setup
+     * @param canvas the canvas that the game will be played on
+     * @param context the context that the GameView is in
+     */
+    public void onStart(Canvas canvas, Context context){};
 }

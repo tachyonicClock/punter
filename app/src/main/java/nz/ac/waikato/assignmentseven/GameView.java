@@ -42,9 +42,8 @@ public class GameView extends View {
         if (deltaTime > MAX_TIME_STEP) deltaTime = MAX_TIME_STEP;
 
 //        Physics Loop
-        for (GameObject gameObject : world.getPhysicsObjectSet()) {
-            if (gameObject instanceof PhysicsObject)
-                ((PhysicsObject) gameObject).onPhysicsUpdate(deltaTime);
+        for (PhysicsObject gameObject : world.getPhysicsObjectSet()) {
+                gameObject.onPhysicsUpdate(deltaTime);
         }
 
 //        Perform collisions
@@ -69,7 +68,7 @@ public class GameView extends View {
 
 //        run game setup
         if (needsSetup){
-            setupGame(canvas);
+            startGame(canvas);
             needsSetup = false;
         }
 
@@ -78,7 +77,7 @@ public class GameView extends View {
     }
 
 //    setupGame is used for setup that cannot be done in the constructor since it needs the canvas
-    private void setupGame(@NotNull Canvas canvas){
+    private void startGame(@NotNull Canvas canvas){
 //        TODO replace with setup for an actual game
 //        Level/Game Setup that needs access to a fully constructed class AND the canvas
         Paint paint = new Paint();
@@ -95,22 +94,15 @@ public class GameView extends View {
         world.add(new Rect( width+thickness/2f, height/2, thickness, height-1, paint, 0));
 
 
-
-//        Rect rect = new Rect( canvas.getWidth()/2f, 800, 400, 200, paint, 5);
-//        rect.transform.setRotationInDegrees(45);
-//        Test rectangle
-//        world.add(rect);
-
         Transform transform = new Transform();
         transform.scale.x = 200;
         transform.scale.y = 100;
         transform.setRotationInDegrees(45);
         transform.translation.x = canvas.getWidth()/2f;
-        transform.translation.y = canvas.getHeight()/2f;
+        transform.translation.y = canvas.getHeight()/2f - 300;
         Rect poly = new Rect(transform, paint, 5);
         world.add(poly);
 
-//
         transform = new Transform();
         transform.scale.x = 100;
         transform.scale.y = 100;
@@ -120,11 +112,16 @@ public class GameView extends View {
         world.add(poly);
 
 //        Add throwable ball
-        Vector2f pos = new Vector2f(canvas.getWidth(), canvas.getHeight()*2 - 300);
-        pos = pos.multiply(0.5f);
-        world.add(new Ball(pos));
+        Ball ball = new Ball();
+        world.add(ball);
 
+//        Add debug info
         world.add(Gizmos.getInstance());
+
+//        RUN ON START EVENTS
+        for (GameObject gameObject : world.getGameObjects()) {
+            gameObject.onStart(canvas, getContext());
+        }
     }
 
     public void restartGame() {
