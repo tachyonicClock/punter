@@ -3,6 +3,7 @@ package nz.ac.waikato.assignmentseven;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 
@@ -11,7 +12,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_home);
 
         // This is required, as sharedPresences requires Context
         ScoreHandler sh = new ScoreHandler();
@@ -27,8 +28,14 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    public void restartGame(View view){
-        ((GameView)findViewById(R.id.game_view)).restartGame();
+    public void startGame(View view){
+        Intent i = new Intent(this, GameActivity.class);
+        startActivity(i);
+    }
+
+    public void gotoScores(View view){
+        Intent i = new Intent(this, ScoreView.class);
+        startActivity(i);
     }
 
     @Override
