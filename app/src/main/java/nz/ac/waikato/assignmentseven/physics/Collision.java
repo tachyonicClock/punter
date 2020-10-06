@@ -86,6 +86,7 @@ public class Collision {
 //        Calculate collision parameters
         if (isCollision()){
             normal = a.getOrigin().subtract(b.getOrigin()).normalized();
+            contactPoints.add(normal.multiply(d).add(a.getOrigin()));
             penetration = r - d;
         }
     }
