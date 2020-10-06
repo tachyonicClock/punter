@@ -11,21 +11,7 @@ import nz.ac.waikato.assignmentseven.scoring.Score;
 import nz.ac.waikato.assignmentseven.scoring.TinyDB;
 
 public class ScoreHandler extends Activity{
-    private static ScoreHandler instance = new ScoreHandler();
-    public static ScoreHandler GetInstance() {
-        // Used to make this a singleton class
-        return instance;
-    }
-
-    private Score currentGame;
-    private TinyDB tinydb;
-    private ArrayList<Score> topScores;
-    private boolean isInitialised = false;
-
-    public Score GetCurrentScore() throws Exception {
-        IsInitialised();
-        return GetInstance().currentGame;
-    }
+    private static ScoreHandler instance = null;
 
     /*
     To be called during app execution to load our data in
@@ -35,15 +21,20 @@ public class ScoreHandler extends Activity{
 
     @param ctx The android context for usage with SharedPreferences
      */
-    public void LoadClass(Context ctx) {
-        GetInstance().topScores = new ArrayList<Score>();
-        GetInstance().tinydb =  new TinyDB(ctx);
+    public static void SetupScoreHandler(Context ctx){
+        instance = new ScoreHandler(ctx);
+    }
+    public static ScoreHandler GetInstance() {
+        // Used to make this a singleton class
+        return instance;
+    }
 
+    private Score currentGame;
+    private TinyDB tinydb;
+    private ArrayList<Score> topScores;
 
-        BuildTree();
-        GetInstance().currentGame = new Score();
-        GetInstance().topScores.add(GetInstance().currentGame);
-        GetInstance().isInitialised = true;
+    public Score GetCurrentScore() throws Exception {
+        return currentGame;
     }
 
     public Score EndCurrentGame() throws Exception {
@@ -57,17 +48,16 @@ public class ScoreHandler extends Activity{
         @param finalScoreChange The final addition to the users score, if any.
     */
     public Score EndCurrentGame(int finalScoreChange) throws Exception {
-        IsInitialised();
 
-        GetInstance().currentGame.ChangeScore(finalScoreChange);
-        GetInstance().tinydb.clear();
+        currentGame.ChangeScore(finalScoreChange);
+        tinydb.clear();
 
-        for (Score score : GetInstance().GetTopScores()){
+        for (Score score : GetTopScores()){
             StoreScore(score);
         }
         Score lastGame = GetCurrentScore();
-        GetInstance().currentGame = new Score();
-        GetInstance().topScores.add(GetInstance().currentGame);
+        currentGame = new Score();
+        topScores.add(currentGame);
         return lastGame;
     }
 
@@ -77,25 +67,23 @@ public class ScoreHandler extends Activity{
         Items are saved {Int id: [Int score, String username]}
     */
     public void BuildTree() {
-        Map<String, ?> allEntries = GetInstance().tinydb.getAll();
+        Map<String, ?> allEntries = tinydb.getAll();
         for (Map.Entry<String, ?> entry : allEntries.entrySet()) {
-            ArrayList<String> arr = GetInstance().tinydb.getListString(entry.getKey());
+            ArrayList<String> arr = tinydb.getListString(entry.getKey());
             int score = Integer.parseInt(arr.get(0));
             String username = (String) arr.get(1);
             Score s = new Score(score);
             s.ChangeName(username);
 
-            GetInstance().topScores.add(s);
+            topScores.add(s);
         }
     }
 
     public ArrayList<Score> GetTopScores() throws Exception {
-        IsInitialised();
-
-        Collections.sort(GetInstance().topScores);
+        Collections.sort(topScores);
         ArrayList<Score> topFive = new ArrayList<Score>();
         int counter = 0;
-        for (Score score : GetInstance().topScores){
+        for (Score score : topScores){
             if (counter == 5) break;
             counter++;
             topFive.add(score);
@@ -103,15 +91,20 @@ public class ScoreHandler extends Activity{
         return topFive;
     }
 
-    private void IsInitialised() throws Exception {
-        if (!GetInstance().isInitialised){ throw new Exception("ScoreHandler is not initialised, please call LoadClass(context)"); }
-    }
 
     private void StoreScore(Score score) {
         ArrayList<String> item = new ArrayList<String>();
         item.add(Integer.toString(score.GetScore()));
         item.add(score.GetName());
-        GetInstance().tinydb.putListString(Integer.toString(score.GetId()), item);
+        tinydb.putListString(Integer.toString(score.GetId()), item);
+    }
+
+    private ScoreHandler(Context ctx){
+        topScores = new ArrayList<Score>();
+        tinydb =  new TinyDB(ctx);
+        BuildTree();
+        currentGame = new Score();
+        topScores.add(currentGame);
     }
 
 }

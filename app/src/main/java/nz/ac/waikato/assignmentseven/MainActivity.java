@@ -14,14 +14,13 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         // This is required, as sharedPresences requires Context
-        ScoreHandler sh = new ScoreHandler();
-        sh.LoadClass(this);
+        ScoreHandler.SetupScoreHandler(this);
 
         // To end the game, simply call EndCurrentGame with an optional final
         // score addition. This call is required in order to persistently
         // store the data and it will also start a new game
         try {
-            sh.EndCurrentGame(19);
+            ScoreHandler.GetInstance().EndCurrentGame(19);
         } catch (Exception e) {
             e.printStackTrace();
         }

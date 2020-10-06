@@ -28,8 +28,6 @@ public class GameView extends View {
 
     private GameWorld world = new GameWorld();
 
-    private ScoreHandler scoreHandler = new ScoreHandler();
-
 //    We need to keep track of when the last draw was in order to accurately calculate physics
     private long previousDraw = System.currentTimeMillis();
     private boolean needsSetup = true;
