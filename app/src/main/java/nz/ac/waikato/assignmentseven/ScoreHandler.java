@@ -33,11 +33,11 @@ public class ScoreHandler extends Activity{
     private TinyDB tinydb;
     private ArrayList<Score> topScores;
 
-    public Score GetCurrentScore() throws Exception {
+    public Score GetCurrentScore() {
         return currentGame;
     }
 
-    public Score EndCurrentGame() throws Exception {
+    public Score EndCurrentGame() {
         return EndCurrentGame(0);
     }
 
@@ -47,7 +47,7 @@ public class ScoreHandler extends Activity{
 
         @param finalScoreChange The final addition to the users score, if any.
     */
-    public Score EndCurrentGame(int finalScoreChange) throws Exception {
+    public Score EndCurrentGame(int finalScoreChange) {
 
         currentGame.ChangeScore(finalScoreChange);
         tinydb.clear();
@@ -79,7 +79,7 @@ public class ScoreHandler extends Activity{
         }
     }
 
-    public ArrayList<Score> GetTopScores() throws Exception {
+    public ArrayList<Score> GetTopScores() {
         Collections.sort(topScores);
         ArrayList<Score> topFive = new ArrayList<Score>();
         int counter = 0;

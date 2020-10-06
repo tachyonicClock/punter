@@ -12,14 +12,12 @@ import android.util.AttributeSet;
 import org.jetbrains.annotations.NotNull;
 
 import nz.ac.waikato.assignmentseven.gameobjects.Ball;
-import nz.ac.waikato.assignmentseven.gameobjects.Circle;
 import nz.ac.waikato.assignmentseven.gameobjects.Gizmos;
-import nz.ac.waikato.assignmentseven.gameobjects.Polygon;
 import nz.ac.waikato.assignmentseven.gameobjects.Rect;
+import nz.ac.waikato.assignmentseven.gameobjects.ScoreDisplay;
+import nz.ac.waikato.assignmentseven.gameobjects.Target;
 import nz.ac.waikato.assignmentseven.physics.Collision;
-import nz.ac.waikato.assignmentseven.physics.PolygonCollider;
 import nz.ac.waikato.assignmentseven.physics.Transform;
-import nz.ac.waikato.assignmentseven.physics.Vector2f;
 
 public class GameView extends View {
     Paint paint;
@@ -93,6 +91,8 @@ public class GameView extends View {
         world.add(new Rect( -thickness/2f, height/2, thickness, height-1, paint, 0));
         world.add(new Rect( width+thickness/2f, height/2, thickness, height-1, paint, 0));
 
+        world.add(new Target(new Transform(200, 200,  30)));
+
 
         Transform transform = new Transform();
         transform.scale.x = 200;
@@ -110,6 +110,10 @@ public class GameView extends View {
         transform.translation.y = canvas.getHeight()/2f + 500;
         poly = new Rect(transform, new Paint(paint), 5);
         world.add(poly);
+
+        Paint textPaint = new Paint();
+        textPaint.setTextSize(100);
+        world.add(new ScoreDisplay(new Transform(width/2, 200, 20), textPaint));
 
 //        Add throwable ball
         Ball ball = new Ball();
