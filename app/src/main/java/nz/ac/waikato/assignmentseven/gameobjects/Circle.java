@@ -18,6 +18,11 @@ public class Circle extends PhysicsObject {
     }
 
     @Override
+    public void calculateInertia() {
+        inertia = 0;
+    }
+
+    @Override
     public void onUpdate(Canvas canvas, float deltaTime) {
     }
 

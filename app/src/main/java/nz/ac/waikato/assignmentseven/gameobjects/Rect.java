@@ -10,14 +10,19 @@ import nz.ac.waikato.assignmentseven.physics.Vector2f;
 
 public class Rect extends Polygon {
 
+    @Override
+    public void calculateInertia() {
+        inertia = (transform.scale.x * transform.scale.x + transform.scale.y * transform.scale.y)/6f * mass;
+    }
+
     public Rect(Transform transform, Paint paint, float mass)
     {
         super(transform, paint, mass, PolygonCollider.rectangleVertices(), PolygonCollider.rectangleNormals());
-        this.inertia = (transform.scale.x * transform.scale.x + transform.scale.y * transform.scale.y)/6f * mass;
+        calculateInertia();
     }
 
     public Rect(float x, float y, float width, float height, Paint paint, float mass){
         super(new Transform(new Vector2f(x, y), new Vector2f(width/2, height/2)), paint, mass, PolygonCollider.rectangleVertices(), PolygonCollider.rectangleNormals());
-        this.inertia = (width * width + height * height)/12f * mass;
+        calculateInertia();
     }
 }

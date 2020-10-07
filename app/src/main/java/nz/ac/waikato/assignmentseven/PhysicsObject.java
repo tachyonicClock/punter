@@ -24,6 +24,8 @@ public abstract class PhysicsObject extends GameObject {
 
     public abstract Collider getCollider();
 
+    public abstract void calculateInertia();
+
     public float inverseMass(){
         if (mass == 0)  return 0;
         return 1 / mass;
