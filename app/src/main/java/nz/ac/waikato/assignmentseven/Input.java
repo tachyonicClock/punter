@@ -1,6 +1,5 @@
 package nz.ac.waikato.assignmentseven;
 
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.VelocityTracker;
 import android.view.View;
@@ -12,29 +11,25 @@ public class Input implements View.OnTouchListener {
     private static Input instance = new Input();
 
     private VelocityTracker velocityTracker;
-
     private Vector2f touchPosition = new Vector2f();
     private boolean isTouchDown = false;
 
-    public static Vector2f getTouchVelocity(){
-        if (!getInstance().isTouchDown) return new Vector2f();
-
-        getInstance().velocityTracker.computeCurrentVelocity(1000);
-        return new Vector2f(getInstance().velocityTracker.getXVelocity(), getInstance().velocityTracker.getYVelocity());
-    }
-
-    public static Vector2f getTouchPosition(){
+    public static Vector2f getTouchPosition() {
         return getInstance().touchPosition;
     }
 
-    public static boolean getTouchDown(){
+    public static boolean getTouchDown() {
         return getInstance().isTouchDown;
+    }
+
+    public static Input getInstance() {
+        return instance;
     }
 
     @Override
     public boolean onTouch(View view, MotionEvent motionEvent) {
 
-        switch (motionEvent.getAction()){
+        switch (motionEvent.getAction()) {
             case MotionEvent.ACTION_DOWN:
 //                Setup velocity tracker
                 if (velocityTracker == null)
@@ -60,9 +55,5 @@ public class Input implements View.OnTouchListener {
             default:
         }
         return true;
-    }
-
-    public static Input getInstance(){
-        return instance;
     }
 }

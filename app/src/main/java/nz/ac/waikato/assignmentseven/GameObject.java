@@ -1,14 +1,13 @@
 package nz.ac.waikato.assignmentseven;
 
 import android.content.Context;
-import android.content.res.Resources;
 import android.graphics.Canvas;
 
 import nz.ac.waikato.assignmentseven.physics.Transform;
 
 public abstract class GameObject {
 
-//    transform the location of the GameObject in the world
+    //    transform the location of the GameObject in the world
     public Transform transform = new Transform();
 
     /***
@@ -30,8 +29,11 @@ public abstract class GameObject {
     /**
      * onStart is called when the game is first started. It is supplied the android context
      * so that it can access resources for setup
-     * @param canvas the canvas that the game will be played on
+     *
+     * @param canvas  the canvas that the game will be played on
      * @param context the context that the GameView is in
      */
-    public void onStart(Canvas canvas, Context context){};
+    public void onStart(Canvas canvas, Context context) {
+    }
+
 }

@@ -4,10 +4,11 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.util.AttributeSet;
 import android.util.Log;
 import android.view.View;
+
 import androidx.annotation.Nullable;
-import android.util.AttributeSet;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -20,19 +21,37 @@ import nz.ac.waikato.assignmentseven.physics.Collision;
 import nz.ac.waikato.assignmentseven.physics.Transform;
 
 public class GameView extends View {
+    private final static float MAX_TIME_STEP = 1 / 30f;
     Paint paint;
-
-    private final static float MAX_TIME_STEP = 1/30f;
-
     private GameWorld world = new GameWorld();
 
-//    We need to keep track of when the last draw was in order to accurately calculate physics
+    //    We need to keep track of when the last draw was in order to accurately calculate physics
     private long previousDraw = System.currentTimeMillis();
     private boolean needsSetup = true;
 
+    public GameView(Context context) {
+        super(context);
+        init();
+    }
+
+    public GameView(Context context, @Nullable AttributeSet attrs) {
+        super(context, attrs);
+        init();
+    }
+
+    public GameView(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
+        super(context, attrs, defStyleAttr);
+        init();
+    }
+
+    public GameView(Context context, @Nullable AttributeSet attrs, int defStyleAttr, int defStyleRes) {
+        super(context, attrs, defStyleAttr, defStyleRes);
+        init();
+    }
+
     void gameLoop(Canvas canvas) {
 //        deltaTime is the amount of time since the last game loop
-        float deltaTime = (float) (System.currentTimeMillis() - previousDraw)/1000f;
+        float deltaTime = (float) (System.currentTimeMillis() - previousDraw) / 1000f;
         previousDraw = System.currentTimeMillis();
 
 //        If we have not been updated in a little while, it is very possible we have been paused. To
@@ -41,11 +60,11 @@ public class GameView extends View {
 
 //        Physics Loop
         for (PhysicsObject gameObject : world.getPhysicsObjectSet()) {
-                gameObject.onPhysicsUpdate(deltaTime);
+            gameObject.onPhysicsUpdate(deltaTime);
         }
 
 //        Perform collisions
-        for (Collision collision : world.getCollisions()){
+        for (Collision collision : world.getCollisions()) {
             collision.updateCollision();
         }
 
@@ -65,7 +84,7 @@ public class GameView extends View {
         super.onDraw(canvas);
 
 //        run game setup
-        if (needsSetup){
+        if (needsSetup) {
             startGame(canvas);
             needsSetup = false;
         }
@@ -74,8 +93,8 @@ public class GameView extends View {
         invalidate();
     }
 
-//    setupGame is used for setup that cannot be done in the constructor since it needs the canvas
-    private void startGame(@NotNull Canvas canvas){
+    //    setupGame is used for setup that cannot be done in the constructor since it needs the canvas
+    private void startGame(@NotNull Canvas canvas) {
 //        TODO replace with setup for an actual game
 //        Level/Game Setup that needs access to a fully constructed class AND the canvas
         Paint paint = new Paint();
@@ -86,10 +105,10 @@ public class GameView extends View {
         float thickness = 1000;
         float width = canvas.getWidth();
         float height = canvas.getHeight();
-        world.add(new Rect( width/2, -thickness/2f, width, thickness, paint, 0));
-        world.add(new Rect( width/2, height+thickness/2f, width, thickness, paint, 0));
-        world.add(new Rect( -thickness/2f, height/2, thickness, height-1, paint, 0));
-        world.add(new Rect( width+thickness/2f, height/2, thickness, height-1, paint, 0));
+        world.add(new Rect(width / 2, -thickness / 2f, width, thickness, paint, 0));
+        world.add(new Rect(width / 2, height + thickness / 2f, width, thickness, paint, 0));
+        world.add(new Rect(-thickness / 2f, height / 2, thickness, height - 1, paint, 0));
+        world.add(new Rect(width + thickness / 2f, height / 2, thickness, height - 1, paint, 0));
 
 //        Map generator generates map
         MapGenerator.generateMap(width, height, world);
@@ -97,7 +116,7 @@ public class GameView extends View {
 //        Score board shows current score
         Paint textPaint = new Paint();
         textPaint.setTextSize(100);
-        world.add(new ScoreDisplay(new Transform(width/2, 200, 20), textPaint));
+        world.add(new ScoreDisplay(new Transform(width / 2, 200, 20), textPaint));
 
 //        Add throwable ball
         Ball ball = new Ball();
@@ -118,30 +137,10 @@ public class GameView extends View {
         needsSetup = true;
     }
 
-    private void init(){
+    private void init() {
         paint = new Paint();
         paint.setColor(getResources().getColor(R.color.colorAccent, getContext().getTheme()));
         setOnTouchListener(Input.getInstance());
-    }
-
-    public GameView(Context context) {
-        super(context);
-        init();
-    }
-
-    public GameView(Context context, @Nullable AttributeSet attrs) {
-        super(context, attrs);
-        init();
-    }
-
-    public GameView(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
-        super(context, attrs, defStyleAttr);
-        init();
-    }
-
-    public GameView(Context context, @Nullable AttributeSet attrs, int defStyleAttr, int defStyleRes) {
-        super(context, attrs, defStyleAttr, defStyleRes);
-        init();
     }
 
 }

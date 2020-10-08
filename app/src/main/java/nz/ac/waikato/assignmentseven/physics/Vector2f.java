@@ -15,75 +15,91 @@ public class Vector2f {
         this.y = (float) y;
     }
 
-    public Vector2f invert(){
-        return new Vector2f(-x, -y);
+    public Vector2f(@NotNull Vector2f position) {
+        this.x = position.x;
+        this.y = position.y;
     }
 
-    public Vector2f multiply(float s){
-        return new Vector2f(x * s, y * s);
-    }
-
-    public float dotProduct(@NotNull Vector2f p2){
-        return x*p2.x + y*p2.y;
-    }
-
-    public Vector2f divide(float s){
-        return new Vector2f(x / s, y / s);
-    }
-
-
-    public Vector2f add(@NotNull Vector2f p2){
-        return new Vector2f(x + p2.x, y + p2.y);
-    }
-
-    public Vector2f subtract(@NotNull Vector2f p2){
-        return new Vector2f(x - p2.x, y - p2.y);
-
-    }
-
-    public Vector2f normalized(){
-        float m = magnitude();
-        if (m == 0) return new Vector2f();
-        return new Vector2f(x/m, y/m);
-    }
-
-    public void set(float x, float y){
+    public Vector2f(float x, float y) {
         this.x = x;
         this.y = y;
     }
 
-    public void setZero(){
+    public Vector2f() {
+        this.x = 0;
+        this.y = 0;
+    }
+
+    public static Vector2f crossProduct(float s, @NotNull Vector2f a) {
+        return new Vector2f(-s * a.y, s * a.x);
+    }
+
+    public Vector2f invert() {
+        return new Vector2f(-x, -y);
+    }
+
+    public Vector2f multiply(float s) {
+        return new Vector2f(x * s, y * s);
+    }
+
+    public float dotProduct(@NotNull Vector2f p2) {
+        return x * p2.x + y * p2.y;
+    }
+
+    public Vector2f divide(float s) {
+        return new Vector2f(x / s, y / s);
+    }
+
+    public Vector2f add(@NotNull Vector2f p2) {
+        return new Vector2f(x + p2.x, y + p2.y);
+    }
+
+    public Vector2f subtract(@NotNull Vector2f p2) {
+        return new Vector2f(x - p2.x, y - p2.y);
+
+    }
+
+    public Vector2f normalized() {
+        float m = magnitude();
+        if (m == 0) return new Vector2f();
+        return new Vector2f(x / m, y / m);
+    }
+
+    public void set(float x, float y) {
+        this.x = x;
+        this.y = y;
+    }
+
+    public void setZero() {
         x = 0;
         y = 0;
     }
 
-    public float crossProduct(Vector2f p2){
+    public float crossProduct(@NotNull Vector2f p2) {
         return x * p2.y - y * p2.x;
     }
 
-    public Vector2f crossProduct(float s){
-        return new Vector2f( s * y, -s * x );
+    public Vector2f crossProduct(float s) {
+        return new Vector2f(s * y, -s * x);
     }
 
-    public static Vector2f crossProduct(float s, Vector2f a){
-        return new Vector2f( -s * a.y, s * a.x );
-    }
-
-    public Vector2f clamp(float min, float max){
+    public Vector2f clamp(float min, float max) {
         if (magnitude() <= min) return normalized().multiply(min);
         if (magnitude() >= max) return normalized().multiply(max);
         return this;
     }
 
-    public boolean equal(@NotNull Vector2f other){
+    public boolean equal(@NotNull Vector2f other) {
         return x == other.x && y == other.y;
     }
 
-    public float magnitude(){
-        return (float) Math.sqrt(x*x + y*y);
+    public float magnitude() {
+        return (float) Math.sqrt(x * x + y * y);
     }
 
-    public float magnitudeSquared(){return x*x + y*y; }
+    public float magnitudeSquared() {
+        return x * x + y * y;
+    }
 
     @NotNull
     @Override
@@ -111,20 +127,5 @@ public class Vector2f {
         int result = (x != +0.0f ? Float.floatToIntBits(x) : 0);
         result = 31 * result + (y != +0.0f ? Float.floatToIntBits(y) : 0);
         return result;
-    }
-
-    public Vector2f(@NotNull Vector2f position) {
-        this.x = position.x;
-        this.y = position.y;
-    }
-
-    public Vector2f(float x, float y){
-        this.x = x;
-        this.y = y;
-    }
-
-    public Vector2f(){
-        this.x = 0;
-        this.y = 0;
     }
 }
