@@ -37,8 +37,18 @@ public class Transform {
     public Vector2f applyScale(@NotNull Vector2f pt){ return new Vector2f(scale.x * pt.x, scale.y * pt.y);}
 //    Apply multiple transforms in specific orders
     public Vector2f applyTranRot(@NotNull Vector2f pt){  return applyRot(applyTran(pt));}
+    public Vector2f applyScaleRotNormalized(@NotNull Vector2f pt){  return applyScale(applyRot(pt)).normalized();}
+
     public Vector2f apply(@NotNull Vector2f pt){         return applyTran(applyRot(applyScale(pt)));}
     public Vector2f reverseApply(@NotNull Vector2f pt){  return applyScale(applyRot(applyTran(pt)));}
+
+    public Transform applyTran(Transform transform){
+        Transform out = new Transform(transform);
+        out.translation = apply(transform.translation);
+        out.scale = applyScale(transform.scale);
+        out.setRotationInRadians(transform.getRotationInRadians() + getRotationInRadians());
+        return out;
+    }
 
 
     @Override
@@ -82,7 +92,10 @@ public class Transform {
         inverted.setRotationInRadians(-getRotationInRadians());
         return inverted;
     }
-
+    public Transform(float xPos, float yPos){
+        this.translation.x = xPos;
+        this.translation.y = yPos;
+    }
     public Transform(float xPos, float yPos, float scale){
         this.translation.x = xPos;
         this.translation.y = yPos;
@@ -97,6 +110,12 @@ public class Transform {
     public Transform(Vector2f translation, Vector2f scale) {
         this.translation = translation;
         this.scale = scale;
+    }
+
+    public Transform(Vector2f translation, Vector2f scale, float degrees) {
+        this.translation = translation;
+        this.scale = scale;
+        setRotationInDegrees(degrees);
     }
 
 //    Transform copy constructor

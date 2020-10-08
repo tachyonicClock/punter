@@ -2,9 +2,11 @@ package nz.ac.waikato.assignmentseven;
 
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Set;
 
 import nz.ac.waikato.assignmentseven.physics.Collision;
+import nz.ac.waikato.assignmentseven.physics.Transform;
 
 public class GameWorld {
 //    Store the game state in HashSets
@@ -35,8 +37,17 @@ public class GameWorld {
         }
 
 //        Add to sets
+        obj.calculateInertia();
         physicsObjectSet.add(obj);
         gameObjectHashSet.add(obj);
+    }
+
+
+    public void add(Transform transform, List<GameObject> objectList) {
+        for (GameObject gameObject : objectList) {
+            gameObject.transform = transform.applyTran(gameObject.transform);
+            add(gameObject);
+        }
     }
 
 //      add a GameObject to the game world

@@ -18,6 +18,11 @@ public class Circle extends PhysicsObject {
     }
 
     @Override
+    public void calculateInertia() {
+        inertia = 0;
+    }
+
+    @Override
     public void onUpdate(Canvas canvas, float deltaTime) {
     }
 
@@ -30,5 +35,12 @@ public class Circle extends PhysicsObject {
         this.transform = new Transform(transform);
         this.paint = new Paint(paint);
         this.mass = mass;
+    }
+
+    public Circle(Transform transform, float mass, float dampening, Paint paint){
+        this.transform = new Transform(transform);
+        this.paint = new Paint(paint);
+        this.mass = mass;
+        this.dampening = dampening;
     }
 }

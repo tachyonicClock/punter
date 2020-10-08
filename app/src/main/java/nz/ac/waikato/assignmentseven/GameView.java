@@ -15,7 +15,7 @@ import nz.ac.waikato.assignmentseven.gameobjects.Ball;
 import nz.ac.waikato.assignmentseven.gameobjects.Gizmos;
 import nz.ac.waikato.assignmentseven.gameobjects.Rect;
 import nz.ac.waikato.assignmentseven.gameobjects.ScoreDisplay;
-import nz.ac.waikato.assignmentseven.gameobjects.Target;
+import nz.ac.waikato.assignmentseven.mapgenerator.MapGenerator;
 import nz.ac.waikato.assignmentseven.physics.Collision;
 import nz.ac.waikato.assignmentseven.physics.Transform;
 
@@ -83,7 +83,7 @@ public class GameView extends View {
         paint.setStyle(Paint.Style.FILL);
 
 //        Add walls to the environment
-        float thickness = 500;
+        float thickness = 1000;
         float width = canvas.getWidth();
         float height = canvas.getHeight();
         world.add(new Rect( width/2, -thickness/2f, width, thickness, paint, 0));
@@ -91,26 +91,10 @@ public class GameView extends View {
         world.add(new Rect( -thickness/2f, height/2, thickness, height-1, paint, 0));
         world.add(new Rect( width+thickness/2f, height/2, thickness, height-1, paint, 0));
 
-        world.add(new Target(new Transform(200, 200,  30)));
+//        Map generator generates map
+        MapGenerator.generateMap(width, height, world);
 
-
-        Transform transform = new Transform();
-        transform.scale.x = 200;
-        transform.scale.y = 100;
-        transform.setRotationInDegrees(45);
-        transform.translation.x = canvas.getWidth()/2f;
-        transform.translation.y = canvas.getHeight()/2f - 300;
-        Rect poly = new Rect(transform, paint, 5);
-        world.add(poly);
-
-        transform = new Transform();
-        transform.scale.x = 100;
-        transform.scale.y = 100;
-        transform.translation.x = canvas.getWidth()/2f;
-        transform.translation.y = canvas.getHeight()/2f + 500;
-        poly = new Rect(transform, new Paint(paint), 5);
-        world.add(poly);
-
+//        Score board shows current score
         Paint textPaint = new Paint();
         textPaint.setTextSize(100);
         world.add(new ScoreDisplay(new Transform(width/2, 200, 20), textPaint));

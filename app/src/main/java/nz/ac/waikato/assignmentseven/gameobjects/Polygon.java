@@ -26,6 +26,10 @@ public class Polygon extends PhysicsObject {
     }
 
     @Override
+    public void calculateInertia() {
+    }
+
+    @Override
     public void onUpdate(Canvas canvas, float deltaTime) {
     }
 
