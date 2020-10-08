@@ -14,8 +14,10 @@ public abstract class PhysicsObject extends GameObject {
 //    A measure of how bouncy the material is
     public float restitution = 1;
 
+    public float dampening = 0f;
+    public float angularDampening = 0f;
 
-//    omega is the rotational velocity. In radians/second
+    //    omega is the rotational velocity. In radians/second
     public float angularVelocity = 0;
 //    torque is the rotational force that will be applied
     public float torque = 0;
@@ -63,6 +65,9 @@ public abstract class PhysicsObject extends GameObject {
 //        Integrate Forces
         velocity = velocity.add(force.multiply(inverseMass()));
         angularVelocity += torque * inverseInertia();
+
+        velocity = velocity.subtract(velocity.multiply(dampening * deltaTime));
+        angularVelocity -= angularVelocity * angularDampening * deltaTime;
 
 //        Integrate Velocity
         transform.translation = transform.translation.add(velocity.multiply(deltaTime));

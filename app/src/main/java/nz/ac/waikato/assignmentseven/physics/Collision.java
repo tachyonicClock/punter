@@ -16,7 +16,7 @@ import nz.ac.waikato.assignmentseven.gameobjects.Gizmos;
  */
 public class Collision {
 //    PERCENT is used for positional correction to avoid objects penetrating each other
-    private static float PERCENT = 0.05f;
+    private static float PERCENT = 0.001f;
 //    SLOP refers to how far objects should be able to penetrate before we adjust their positions
     private static float SLOP = 0.2f;
 

@@ -68,7 +68,6 @@ public class Ball extends Circle {
         throwArea.setColor(resources.getColor(R.color.throwArea, t));
         throwArea.setAlpha(100);
 
-
         changeState(state);
         center.x = canvas.getWidth()/2f;
         center.y = canvas.getHeight()/2f;
@@ -100,12 +99,12 @@ public class Ball extends Circle {
         }
         // Add a max velocity
         velocity = velocity.clamp(0, 5000);
-        addForce(velocity.invert().multiply(0.008f));
     }
 
     @Override
     public void onDraw(Canvas canvas) {
         if (state != State.YOOT) canvas.drawCircle(center.x, center.y, throwRadius, throwArea);
         super.onDraw(canvas);
+        dampening = 0.8f;
     }
 }

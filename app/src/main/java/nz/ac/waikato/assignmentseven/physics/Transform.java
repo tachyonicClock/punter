@@ -112,6 +112,12 @@ public class Transform {
         this.scale = scale;
     }
 
+    public Transform(Vector2f translation, Vector2f scale, float degrees) {
+        this.translation = translation;
+        this.scale = scale;
+        setRotationInDegrees(degrees);
+    }
+
 //    Transform copy constructor
     public Transform(@NotNull Transform transform) {
         translation = new Vector2f(transform.translation);
