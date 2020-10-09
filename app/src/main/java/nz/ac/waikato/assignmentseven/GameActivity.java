@@ -7,24 +7,15 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 
-public class MainActivity extends AppCompatActivity {
-
+public class GameActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_home);
-
-        ScoreHandler.SetupScoreHandler(this);
+        setContentView(R.layout.activity_game);
     }
 
-    public void startGame(View view){
-        Intent i = new Intent(this, GameActivity.class);
-        startActivity(i);
-    }
-
-    public void gotoScores(View view){
-        Intent i = new Intent(this, ScoreView.class);
-        startActivity(i);
+    public void restartGame(View view){
+        ((GameView)findViewById(R.id.game_view)).restartGame();
     }
 
     @Override
