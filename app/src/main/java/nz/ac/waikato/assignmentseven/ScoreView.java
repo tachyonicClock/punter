@@ -18,7 +18,7 @@ public class ScoreView extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_scores);
-        ScoreHandler sh = new ScoreHandler();
+        ScoreHandler sh = ScoreHandler.GetInstance();
         ArrayList<Score> topScores = new ArrayList<Score>();
         try {
             topScores = sh.GetTopScores();

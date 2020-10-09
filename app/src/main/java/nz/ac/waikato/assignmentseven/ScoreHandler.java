@@ -5,28 +5,13 @@ import android.content.Context;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.List;
 import java.util.Map;
 
 import nz.ac.waikato.assignmentseven.scoring.Score;
 import nz.ac.waikato.assignmentseven.scoring.TinyDB;
 
-
 public class ScoreHandler extends Activity{
-    private static ScoreHandler instance = new ScoreHandler();
-    public static ScoreHandler GetInstance() {
-        // Used to make this a singleton class
-        return instance;
-    }
-
-    private Score currentGame;
-    private TinyDB tinydb;
-    private ArrayList<Score> topScores;
-    private boolean isInitialised = false;
-
-    public Score GetCurrentScore() {
-        return GetInstance().currentGame;
-    }
+    private static ScoreHandler instance = null;
 
     /*
     To be called during app execution to load our data in
@@ -36,15 +21,21 @@ public class ScoreHandler extends Activity{
 
     @param ctx The android context for usage with SharedPreferences
      */
-    public void LoadClass(Context ctx) {
-        GetInstance().topScores = new ArrayList<Score>();
-        GetInstance().tinydb =  new TinyDB(ctx);
+    public static void SetupScoreHandler(Context ctx){
+        instance = new ScoreHandler(ctx);
+    }
+    public static ScoreHandler GetInstance() {
+        // Used to make this a singleton class
+        return instance;
+    }
 
+    private Score currentGame;
+    private TinyDB tinydb;
+    private ArrayList<Score> topScores;
 
-        BuildTree();
-        GetInstance().currentGame = new Score();
-        GetInstance().topScores.add(GetInstance().currentGame);
-        GetInstance().isInitialised = true;
+    public Score GetCurrentScore() {
+        return currentGame;
+    }
 
     public Score EndCurrentGame() {
         return EndCurrentGame(0);
@@ -56,17 +47,17 @@ public class ScoreHandler extends Activity{
 
         @param finalScoreChange The final addition to the users score, if any.
     */
-    public Score EndCurrentGame(int finalScoreChange){
+    public Score EndCurrentGame(int finalScoreChange) {
 
-        GetInstance().currentGame.ChangeScore(finalScoreChange);
-        GetInstance().tinydb.clear();
+        currentGame.ChangeScore(finalScoreChange);
+        tinydb.clear();
 
-        for (Score score : GetInstance().GetTopScores()){
+        for (Score score : GetTopScores()){
             StoreScore(score);
         }
         Score lastGame = GetCurrentScore();
-        GetInstance().currentGame = new Score();
-        GetInstance().topScores.add(GetInstance().currentGame);
+        currentGame = new Score();
+        topScores.add(currentGame);
         return lastGame;
     }
 
