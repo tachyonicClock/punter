@@ -7,8 +7,10 @@ import android.graphics.Color;
  * colours.
  */
 public class ColourMeanings {
-    final static int MOVABLE_MEDIUM = Color.parseColor("#303F9F");
-    final static int MOVABLE_DAMPENED = Color.parseColor("#7E57C2");
-    final static int UNMOVABLE = Color.parseColor("#424242");
+    public final static int MOVABLE_MEDIUM = Color.parseColor("#303F9F");
+    public final static int MOVABLE_DAMPENED = Color.parseColor("#7E57C2");
+    public final static int RANDOMISER_MAIN = Color.parseColor("#00055e");
+    public final static int UNMOVABLE = Color.parseColor("#424242");
+    public final static int SLOWNESS_VIOLET = Color.parseColor("#9400D3");
 
 }

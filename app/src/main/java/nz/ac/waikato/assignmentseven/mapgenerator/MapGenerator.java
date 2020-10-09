@@ -9,7 +9,9 @@ import java.util.Random;
 import nz.ac.waikato.assignmentseven.GameObject;
 import nz.ac.waikato.assignmentseven.GameWorld;
 import nz.ac.waikato.assignmentseven.gameobjects.Circle;
+import nz.ac.waikato.assignmentseven.gameobjects.Randomiser;
 import nz.ac.waikato.assignmentseven.gameobjects.Rect;
+import nz.ac.waikato.assignmentseven.gameobjects.Slowness;
 import nz.ac.waikato.assignmentseven.gameobjects.Target;
 import nz.ac.waikato.assignmentseven.physics.Transform;
 import nz.ac.waikato.assignmentseven.physics.Vector2f;
@@ -52,6 +54,30 @@ public class MapGenerator {
                         Rect rect = new Rect(0.4f, 1f, 0.9f, 0.1f, p, 0);
                         objectGroup.add(rect);
                     }
+
+                    return objectGroup;
+                }
+            },
+            new MapQuad() {
+                @Override
+                public List<GameObject> generateMapQuad() {
+
+                    // A randomiser obj
+
+                    objectGroup.add(new Randomiser(new Transform(0.5f, 0.5f, 0.04f), 1));
+                    objectGroup.add(new Randomiser(new Transform(0.5f, 0.5f, 0.04f), 1));
+                    objectGroup.add(new Randomiser(new Transform(0.5f, 0.5f, 0.04f), 1));
+
+                    return objectGroup;
+                }
+            },
+            new MapQuad() {
+                @Override
+                public List<GameObject> generateMapQuad() {
+
+                    // A slowness obj
+
+                    objectGroup.add(new Slowness(new Transform(0.5f, 0.5f, 0.04f), 2));
 
                     return objectGroup;
                 }
