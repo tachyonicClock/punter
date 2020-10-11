@@ -7,7 +7,10 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 
+import nz.ac.waikato.assignmentseven.audio.AudioMeanings;
+import nz.ac.waikato.assignmentseven.audio.ContextSingleton;
 import nz.ac.waikato.assignmentseven.audio.MusicManager;
+import nz.ac.waikato.assignmentseven.audio.SoundManager;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -17,14 +20,18 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_home);
 
         ScoreHandler.SetupScoreHandler(this);
+
+        AudioHandler.PlaySound(AudioMeanings.HOMESCREEN_THEME);
     }
 
     public void startGame(View view){
+        AudioHandler.PlaySound(AudioMeanings.TRANSITION);
         Intent i = new Intent(this, GameActivity.class);
         startActivity(i);
     }
 
     public void gotoScores(View view){
+        AudioHandler.PlaySound(AudioMeanings.TRANSITION);
         Intent i = new Intent(this, ScoreView.class);
         startActivity(i);
     }
