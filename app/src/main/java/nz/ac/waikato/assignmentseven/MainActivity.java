@@ -7,6 +7,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 
+import nz.ac.waikato.assignmentseven.audio.MusicManager;
+
 public class MainActivity extends AppCompatActivity {
 
     @Override
