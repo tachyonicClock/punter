@@ -16,6 +16,7 @@ import nz.ac.waikato.assignmentseven.gameobjects.Ball;
 import nz.ac.waikato.assignmentseven.gameobjects.Gizmos;
 import nz.ac.waikato.assignmentseven.gameobjects.Rect;
 import nz.ac.waikato.assignmentseven.gameobjects.ScoreDisplay;
+import nz.ac.waikato.assignmentseven.gameobjects.Target;
 import nz.ac.waikato.assignmentseven.mapgenerator.MapGenerator;
 import nz.ac.waikato.assignmentseven.physics.Collision;
 import nz.ac.waikato.assignmentseven.physics.Transform;
@@ -95,7 +96,6 @@ public class GameView extends View {
 
     //    setupGame is used for setup that cannot be done in the constructor since it needs the canvas
     private void startGame(@NotNull Canvas canvas) {
-//        TODO replace with setup for an actual game
 //        Level/Game Setup that needs access to a fully constructed class AND the canvas
         Paint paint = new Paint();
         paint.setColor(Color.BLUE);
@@ -112,6 +112,17 @@ public class GameView extends View {
 
 //        Map generator generates map
         MapGenerator.generateMap(width, height, world);
+
+        // Ensure the existence of a target
+        int targets = 0;
+        for (GameObject gameObject : world.getGameObjects()) {
+            if(gameObject instanceof Target) targets ++;
+        }
+        if (targets < 1) {
+            restartGame();
+            startGame(canvas);
+            return;
+        }
 
 //        Score board shows current score
         Paint textPaint = new Paint();

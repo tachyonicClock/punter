@@ -1,6 +1,6 @@
 <resources>
     <string name="app_name">Punter</string>
-    <string name="restart_button">Restart</string>
+    <string name="restart_button">next level</string>
     <string name="start">Start</string>
     <string name="high_scores">High Scores</string>
     <string name="a_fun_physics_based_mobile_game">A fun physics based mobile game.</string>
