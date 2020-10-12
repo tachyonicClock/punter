@@ -23,7 +23,7 @@ public class Target extends Circle {
     public void onCollision(Collision collision) {
         if (!(collision.getOther(this) instanceof Ball)) return;
         ScoreHandler.GetInstance().GetCurrentScore().ChangeScore(1);
-        AudioHandler.PlaySound(AudioMeanings.TARGET_COLLISION);
+        AudioHandler.getInstance().playSoundSimultaneously(AudioMeanings.TARGET_COLLISION);
         effectSize += 100;
     }
 

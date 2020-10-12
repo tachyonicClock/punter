@@ -14,13 +14,11 @@ import java.util.ArrayList;
 import nz.ac.waikato.assignmentseven.audio.AudioMeanings;
 import nz.ac.waikato.assignmentseven.scoring.Score;
 
-public class ScoreView extends AppCompatActivity {
+public class ScoreActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_scores);
-
-        AudioHandler.PlaySound(AudioMeanings.HOMESCREEN_THEME);
 
         ScoreHandler sh = ScoreHandler.GetInstance();
         ArrayList<Score> topScores = new ArrayList<Score>();
@@ -43,9 +41,8 @@ public class ScoreView extends AppCompatActivity {
     }
 
     public void gotoHome(View view){
-        AudioHandler.PlaySound(AudioMeanings.TRANSITION);
-        Intent i = new Intent(this, MainActivity.class);
-        startActivity(i);
+        AudioHandler.getInstance().playSoundSimultaneously(AudioMeanings.TRANSITION);
+        finish();
     }
 
     @Override

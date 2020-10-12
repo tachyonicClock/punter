@@ -15,4 +15,12 @@ public class AudioMeanings {
     public final static int SLOWDOWN_COLLISION = R.raw.rect;
     public final static int HOMESCREEN_THEME = R.raw.bg_home_theme;
     public final static int TRANSITION = R.raw.transitions;
+
+    public static void loadAll(SoundManager soundManager){
+        soundManager.load(TARGET_COLLISION);
+        soundManager.load(RECT_COLLISION);
+        soundManager.load(SLOWDOWN_COLLISION);
+        soundManager.load(HOMESCREEN_THEME);
+        soundManager.load(TRANSITION);
+    }
 }

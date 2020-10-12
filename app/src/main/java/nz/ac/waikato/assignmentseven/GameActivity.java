@@ -7,7 +7,12 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 
+import nz.ac.waikato.assignmentseven.audio.AudioMeanings;
+import nz.ac.waikato.assignmentseven.audio.SoundManager;
+
 public class GameActivity extends AppCompatActivity {
+    private GameView game;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -15,7 +20,7 @@ public class GameActivity extends AppCompatActivity {
     }
 
     public void restartGame(View view){
-        ((GameView)findViewById(R.id.game_view)).restartGame();
+        game.restartGame();
     }
 
     @Override
@@ -28,5 +33,12 @@ public class GameActivity extends AppCompatActivity {
         if (actionBar != null){
             actionBar.hide();
         }
+        // Setup game
+        game = (GameView)findViewById(R.id.game_view);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
     }
 }
