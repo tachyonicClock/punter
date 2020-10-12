@@ -14,9 +14,10 @@ public abstract class PhysicsObject extends GameObject {
 //    A measure of how bouncy the material is
     public float restitution = 1;
 
+    // dampening is how quickly it will slow to a stop. This does not reflect realistic physics
     public float dampening = 0f;
+    // angularDampening is how quickly it will slow to angular stop. This does not reflect realistic physics
     public float angularDampening = 0f;
-
     //    omega is the rotational velocity. In radians/second
     public float angularVelocity = 0;
 //    torque is the rotational force that will be applied
@@ -29,7 +30,7 @@ public abstract class PhysicsObject extends GameObject {
     public abstract void calculateInertia();
 
     public float inverseMass(){
-        if (mass == 0)  return 0;
+        if (mass == 0)  return 0;+ ap
         return 1 / mass;
     }
 

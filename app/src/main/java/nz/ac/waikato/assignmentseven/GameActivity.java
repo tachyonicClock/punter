@@ -81,7 +81,6 @@ public class GameActivity extends AppCompatActivity {
         fullScreen();
         // Setup game
         game = (GameView)findViewById(R.id.game_view);
-        game.start();
     }
 
     @Override

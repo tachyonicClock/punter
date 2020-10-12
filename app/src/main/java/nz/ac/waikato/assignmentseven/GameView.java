@@ -28,7 +28,7 @@ public class GameView extends View {
 
     //    We need to keep track of when the last draw was in order to accurately calculate physics
     private long previousDraw = System.currentTimeMillis();
-    private boolean needsSetup = false;
+    private boolean needsSetup = true;
 
     public GameView(Context context) {
         super(context);
@@ -48,10 +48,6 @@ public class GameView extends View {
     public GameView(Context context, @Nullable AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
         init();
-    }
-
-    public void start(){
-        needsSetup = true;
     }
 
     void gameLoop(Canvas canvas) {
@@ -125,6 +121,7 @@ public class GameView extends View {
         if (targets < 1) {
             restartGame();
             startGame(canvas);
+            return;
         }
 
 //        Score board shows current score
