@@ -16,6 +16,7 @@ import nz.ac.waikato.assignmentseven.gameobjects.Ball;
 import nz.ac.waikato.assignmentseven.gameobjects.Gizmos;
 import nz.ac.waikato.assignmentseven.gameobjects.Rect;
 import nz.ac.waikato.assignmentseven.gameobjects.ScoreDisplay;
+import nz.ac.waikato.assignmentseven.gameobjects.Target;
 import nz.ac.waikato.assignmentseven.mapgenerator.MapGenerator;
 import nz.ac.waikato.assignmentseven.physics.Collision;
 import nz.ac.waikato.assignmentseven.physics.Transform;
@@ -27,7 +28,7 @@ public class GameView extends View {
 
     //    We need to keep track of when the last draw was in order to accurately calculate physics
     private long previousDraw = System.currentTimeMillis();
-    private boolean needsSetup = true;
+    private boolean needsSetup = false;
 
     public GameView(Context context) {
         super(context);
@@ -47,6 +48,10 @@ public class GameView extends View {
     public GameView(Context context, @Nullable AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
         init();
+    }
+
+    public void start(){
+        needsSetup = true;
     }
 
     void gameLoop(Canvas canvas) {
@@ -95,7 +100,6 @@ public class GameView extends View {
 
     //    setupGame is used for setup that cannot be done in the constructor since it needs the canvas
     private void startGame(@NotNull Canvas canvas) {
-//        TODO replace with setup for an actual game
 //        Level/Game Setup that needs access to a fully constructed class AND the canvas
         Paint paint = new Paint();
         paint.setColor(Color.BLUE);
@@ -112,6 +116,16 @@ public class GameView extends View {
 
 //        Map generator generates map
         MapGenerator.generateMap(width, height, world);
+
+        // Ensure the existence of a target
+        int targets = 0;
+        for (GameObject gameObject : world.getGameObjects()) {
+            if(gameObject instanceof Target) targets ++;
+        }
+        if (targets < 1) {
+            restartGame();
+            startGame(canvas);
+        }
 
 //        Score board shows current score
         Paint textPaint = new Paint();

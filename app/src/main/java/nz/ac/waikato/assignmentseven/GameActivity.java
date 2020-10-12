@@ -48,6 +48,7 @@ public class GameActivity extends AppCompatActivity {
                     String name = input.getText().toString();
                     ScoreHandler.GetInstance().GetCurrentScore().ChangeName(name);
                     ScoreHandler.GetInstance().EndCurrentGame();
+                    fullScreen();
                 }
             });
             builder.setOnCancelListener(new DialogInterface.OnCancelListener() {
@@ -55,6 +56,7 @@ public class GameActivity extends AppCompatActivity {
                 public void onCancel(DialogInterface dialogInterface) {
                     ScoreHandler.GetInstance().GetCurrentScore().ChangeName(ScoreHandler.GetInstance().getLastGame().GetName());
                     ScoreHandler.GetInstance().EndCurrentGame();
+                    fullScreen();
                 }
             });
 
@@ -63,9 +65,7 @@ public class GameActivity extends AppCompatActivity {
         else { ScoreHandler.GetInstance().EndCurrentGame(); }
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
+    private void fullScreen(){
 //        Enter full screen mode
         int uiOptions = View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY | View.SYSTEM_UI_FLAG_FULLSCREEN | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION;
         getWindow().getDecorView().setSystemUiVisibility(uiOptions);
@@ -73,8 +73,15 @@ public class GameActivity extends AppCompatActivity {
         if (actionBar != null){
             actionBar.hide();
         }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        fullScreen();
         // Setup game
         game = (GameView)findViewById(R.id.game_view);
+        game.start();
     }
 
     @Override
