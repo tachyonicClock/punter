@@ -6,7 +6,9 @@ import android.graphics.Paint;
 
 import java.util.Random;
 
+import nz.ac.waikato.assignmentseven.AudioHandler;
 import nz.ac.waikato.assignmentseven.PhysicsObject;
+import nz.ac.waikato.assignmentseven.audio.AudioMeanings;
 import nz.ac.waikato.assignmentseven.mapgenerator.ColourMeanings;
 import nz.ac.waikato.assignmentseven.physics.Collision;
 import nz.ac.waikato.assignmentseven.physics.Transform;
@@ -22,17 +24,14 @@ public class Slowness extends Circle {
 
         super(transform, mass, new Paint());
 
+        // Slow the objects on collision
         dampening = 0.9f;
         restitution = 0.5f;
     }
 
     @Override
     public void onCollision(Collision collision) {
-        // if (collision.getOther(this) instanceof Slowness) return;
-        // PhysicsObject other = collision.getOther(this);
-        //
-        //
-        // other.velocity = other.velocity.multiply(0.5f);
+        if (collision.getOther(this) instanceof Ball)  AudioHandler.getInstance().playSoundSimultaneously(AudioMeanings.RECT_COLLISION);
     }
 
     @Override

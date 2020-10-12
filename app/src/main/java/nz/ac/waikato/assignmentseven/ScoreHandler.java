@@ -30,6 +30,7 @@ public class ScoreHandler extends Activity{
     }
 
     private Score currentGame;
+    private Score previousGame;
     private TinyDB tinydb;
     private ArrayList<Score> topScores;
 
@@ -39,6 +40,11 @@ public class ScoreHandler extends Activity{
 
     public Score EndCurrentGame() {
         return EndCurrentGame(0);
+    }
+
+    public Score getLastGame(){
+        if (previousGame == null) return new Score();
+        return previousGame;
     }
 
     /*
@@ -58,6 +64,7 @@ public class ScoreHandler extends Activity{
         Score lastGame = GetCurrentScore();
         currentGame = new Score();
         topScores.add(currentGame);
+        previousGame = lastGame;
         return lastGame;
     }
 

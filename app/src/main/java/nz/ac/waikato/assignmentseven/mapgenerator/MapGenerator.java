@@ -63,10 +63,13 @@ public class MapGenerator {
                 public List<GameObject> generateMapQuad() {
 
                     // A randomiser obj
+                    for (int i = 0; i < rand.nextInt(5); i++) {
+                        objectGroup.add(new Randomiser(new Transform(0.5f, 0.5f, 0.04f), 1));
+                    }
 
-                    objectGroup.add(new Randomiser(new Transform(0.5f, 0.5f, 0.04f), 1));
-                    objectGroup.add(new Randomiser(new Transform(0.5f, 0.5f, 0.04f), 1));
-                    objectGroup.add(new Randomiser(new Transform(0.5f, 0.5f, 0.04f), 1));
+                    for (int i = 0; i < rand.nextInt(5); i++) {
+                        objectGroup.add(new Slowness(new Transform(0.5f, 0.5f, 0.04f), 2));
+                    }
 
                     return objectGroup;
                 }
@@ -74,10 +77,11 @@ public class MapGenerator {
             new MapQuad() {
                 @Override
                 public List<GameObject> generateMapQuad() {
-
-                    // A slowness obj
-
-                    objectGroup.add(new Slowness(new Transform(0.5f, 0.5f, 0.04f), 2));
+                    // Add rotating rectangle
+                    p.setColor(ColourMeanings.UNMOVABLE);
+                    Rect rect = new Rect(0.5f, 0.5f, 0.2f, 0.5f, p, 50000);
+                    rect.angularVelocity = 10f;
+                    objectGroup.add(rect);
 
                     return objectGroup;
                 }
@@ -157,8 +161,8 @@ public class MapGenerator {
                 public List<GameObject> generateMapQuad() {
                     // Add multiple randomized circles
                     p.setColor(ColourMeanings.MOVABLE_DAMPENED);
-                    float mass = randFloat(0.1f, 1);
-                    float size = randFloat(0.02f, 0.04f);
+                    float mass = randFloat(0.5f, 2);
+                    float size = randFloat(0.03f, 0.06f);
                     float padding = randFloat(0.2f, 0.35f);
                     float dampening = randFloat(0, 1f);
                     objectGroup.add(new Circle(new Transform(1f - padding, 1f - padding, size), mass, dampening, p));

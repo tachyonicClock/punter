@@ -39,6 +39,7 @@ public class GameActivity extends AppCompatActivity {
             // Specify the type of input expected; this, for example, sets the input as a password, and will mask the text
             input.setInputType(InputType.TYPE_CLASS_TEXT);
             builder.setView(input);
+            input.setText(ScoreHandler.GetInstance().getLastGame().GetName());
 
             // Set up the buttons
             builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
@@ -49,10 +50,10 @@ public class GameActivity extends AppCompatActivity {
                     ScoreHandler.GetInstance().EndCurrentGame();
                 }
             });
-            builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            builder.setOnCancelListener(new DialogInterface.OnCancelListener() {
                 @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    dialog.cancel();
+                public void onCancel(DialogInterface dialogInterface) {
+                    ScoreHandler.GetInstance().GetCurrentScore().ChangeName(ScoreHandler.GetInstance().getLastGame().GetName());
                     ScoreHandler.GetInstance().EndCurrentGame();
                 }
             });

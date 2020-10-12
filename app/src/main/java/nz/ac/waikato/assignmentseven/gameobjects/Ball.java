@@ -9,8 +9,11 @@ import android.util.Pair;
 
 import java.util.ResourceBundle;
 
+import nz.ac.waikato.assignmentseven.AudioHandler;
 import nz.ac.waikato.assignmentseven.Input;
 import nz.ac.waikato.assignmentseven.R;
+import nz.ac.waikato.assignmentseven.audio.AudioMeanings;
+import nz.ac.waikato.assignmentseven.physics.Collision;
 import nz.ac.waikato.assignmentseven.physics.Transform;
 import nz.ac.waikato.assignmentseven.physics.Vector2f;
 
@@ -40,14 +43,24 @@ public class Ball extends Circle {
         this.state = state;
         switch (state){
             case PICKED_UP:
+                mass = 1;
                 paint.setColor(pickedUpColour);
                 break;
             case WAITING:
+                mass = 0;
                 paint.setColor(ballColour);
                 break;
             case YOOT:
+                mass = 1;
                 paint.setColor(thrownColour);
         }
+    }
+
+    @Override
+    public void onCollision(Collision collision) {
+        super.onCollision(collision);
+
+        AudioHandler.getInstance().playSoundSimultaneously(AudioMeanings.BOUNCE);
     }
 
     public Ball() {
@@ -55,7 +68,6 @@ public class Ball extends Circle {
         transform.scale.x = size;
         transform.scale.y = size;
         changeState(state);
-        mass = 1;
     }
 
     @Override

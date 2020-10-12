@@ -12,15 +12,18 @@ import nz.ac.waikato.assignmentseven.R;
 public class AudioMeanings {
     public final static int TARGET_COLLISION = R.raw.target;
     public final static int RECT_COLLISION = R.raw.rect;
-    public final static int SLOWDOWN_COLLISION = R.raw.rect;
+    public final static int SLOWDOWN_COLLISION = R.raw.ball;
     public final static int HOMESCREEN_THEME = R.raw.bg_home_theme;
     public final static int TRANSITION = R.raw.transitions;
+    public final static int BOUNCE = R.raw.bounce;
+
 
     public static void loadAll(SoundManager soundManager){
         soundManager.load(TARGET_COLLISION);
         soundManager.load(RECT_COLLISION);
         soundManager.load(SLOWDOWN_COLLISION);
-        soundManager.load(HOMESCREEN_THEME);
         soundManager.load(TRANSITION);
+        soundManager.load(BOUNCE);
+
     }
 }
