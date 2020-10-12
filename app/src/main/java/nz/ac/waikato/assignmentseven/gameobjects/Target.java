@@ -4,7 +4,9 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 
+import nz.ac.waikato.assignmentseven.AudioHandler;
 import nz.ac.waikato.assignmentseven.ScoreHandler;
+import nz.ac.waikato.assignmentseven.audio.AudioMeanings;
 import nz.ac.waikato.assignmentseven.physics.Collision;
 import nz.ac.waikato.assignmentseven.physics.Transform;
 
@@ -21,6 +23,7 @@ public class Target extends Circle {
     public void onCollision(Collision collision) {
         if (!(collision.getOther(this) instanceof Ball)) return;
         ScoreHandler.GetInstance().GetCurrentScore().ChangeScore(1);
+        AudioHandler.getInstance().playSoundSimultaneously(AudioMeanings.TARGET_COLLISION);
         effectSize += 100;
     }
 
