@@ -265,12 +265,13 @@ public class Collision {
 
     // updatePhysicsObjects calls the onCollision callbacks
     public void updatePhysicsObjects() {
+        objA.onCollision(this);
+        objB.onCollision(this);
+
         for (Vector2f contact : contactPoints) {
             applyImpulse(contact);
         }
         positionalCorrection();
-        objA.onCollision(this);
-        objB.onCollision(this);
     }
 
     // updateCollision is used to recalculate the collision
