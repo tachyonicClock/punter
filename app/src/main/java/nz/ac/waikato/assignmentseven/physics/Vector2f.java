@@ -30,7 +30,7 @@ public class Vector2f {
         this.y = 0;
     }
 
-    public static Vector2f invermultiplyscrossProduct(float s, @NotNull Vector2f a) {
+    public static Vector2f crossProduct(float s, @NotNull Vector2f a) {
         return new Vector2f(-s * a.y, s * a.x);
     }
 

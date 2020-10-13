@@ -79,8 +79,8 @@ public class MapGenerator {
                 public List<GameObject> generateMapQuad() {
                     // Add rotating rectangle
                     p.setColor(ColourMeanings.UNMOVABLE);
-                    Rect rect = new Rect(0.5f, 0.5f, 0.2f, 0.5f, p, 50000);
-                    rect.angularVelocity = 10f;
+                    Rect rect = new Rect(0.5f, 0.5f, 0.4f, 0.2f, p, 50000);
+                    rect.angularVelocity = randFloat(-20f, 20f);
                     objectGroup.add(rect);
 
                     return objectGroup;

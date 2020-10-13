@@ -30,39 +30,47 @@ public class GameActivity extends AppCompatActivity {
 
     public void restartGame(View view){
         ((GameView)findViewById(R.id.game_view)).restartGame();
+        ScoreHandler sh = ScoreHandler.GetInstance();
 
-        if (ScoreHandler.GetInstance().GetCurrentScore().GetScore() != 0) {
-            AlertDialog.Builder builder = new AlertDialog.Builder(this);
-            builder.setTitle("Name");
-            // Set up the input
-            final EditText input = new EditText(this);
-            // Specify the type of input expected; this, for example, sets the input as a password, and will mask the text
-            input.setInputType(InputType.TYPE_CLASS_TEXT);
-            builder.setView(input);
-            input.setText(ScoreHandler.GetInstance().getLastGame().GetName());
 
-            // Set up the buttons
-            builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    String name = input.getText().toString();
-                    ScoreHandler.GetInstance().GetCurrentScore().ChangeName(name);
-                    ScoreHandler.GetInstance().EndCurrentGame();
-                    fullScreen();
-                }
-            });
-            builder.setOnCancelListener(new DialogInterface.OnCancelListener() {
-                @Override
-                public void onCancel(DialogInterface dialogInterface) {
-                    ScoreHandler.GetInstance().GetCurrentScore().ChangeName(ScoreHandler.GetInstance().getLastGame().GetName());
-                    ScoreHandler.GetInstance().EndCurrentGame();
-                    fullScreen();
-                }
-            });
-
-            builder.show();
+        // If they score 0 we do not bother doing anything
+        if (sh.GetCurrentScore().GetScore() == 0) {
+            return;
         }
-        else { ScoreHandler.GetInstance().EndCurrentGame(); }
+
+        // Shows the dialog asking for there name
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Name");
+        // Set up the input
+        final EditText input = new EditText(this);
+        // Specify the type of input expected; this, for example, sets the input as a password, and will mask the text
+        input.setInputType(InputType.TYPE_CLASS_TEXT);
+        builder.setView(input);
+        input.setText(ScoreHandler.GetInstance().getLastGame().GetName());
+
+        // Set up the buttons
+        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                String name = input.getText().toString();
+                ScoreHandler.GetInstance().GetCurrentScore().ChangeName(name);
+                ScoreHandler.GetInstance().EndCurrentGame();
+                // Ensure it re-enters fullscreen
+                fullScreen();
+            }
+        });
+        builder.setOnCancelListener(new DialogInterface.OnCancelListener() {
+            @Override
+            public void onCancel(DialogInterface dialogInterface) {
+                ScoreHandler.GetInstance().GetCurrentScore().ChangeName(ScoreHandler.GetInstance().getLastGame().GetName());
+                ScoreHandler.GetInstance().EndCurrentGame();
+                // Ensure it re-enters fullscreen
+                fullScreen();
+            }
+        });
+
+        builder.show();
     }
 
     private void fullScreen(){

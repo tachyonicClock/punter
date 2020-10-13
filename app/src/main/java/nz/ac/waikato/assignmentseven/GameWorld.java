@@ -31,7 +31,7 @@ public class GameWorld {
 
     // add a PhysicsObject to the game world
     public void add(PhysicsObject obj) {
-        re// Add all possible collision manifolds
+        // Add all possible collision manifolds
         for (PhysicsObject gameObject : physicsObjectSet) {
             if (!obj.equals(gameObject))
                 collisionHashSet.add(new Collision(obj, gameObject));
