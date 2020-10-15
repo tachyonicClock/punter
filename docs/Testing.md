@@ -8,7 +8,5 @@
 | <img src="img/image-20201012150402332.png" alt="image-20201012150402332" style="zoom:25%;" /> ![image-20201012150516550](img/image-20201012150516550.png) | Early throwing testing. <br />Ball vs Ball                   |
 | ![image-20201012150658915](img/image-20201012150658915.png)![image-20201012150753276](img/image-20201012150753276.png) | Rectangle VS Ball testing                                    |
 | <img src="img/image-20201012150812891.png" alt="image-20201012150812891" style="zoom:50%;" /> | Debugging rectangle rotation and collisions.                 |
+| ![image-20201012150123292](img/IMG20201005024501.jpg)  | Further sprint progression                      |
 |                                                              |                                                              |
-
-
-
